@@ -1,0 +1,6 @@
+# Ignore large files
+.node_modules/
+node_modules/
+node_modules/cache
+# Ignore the node_modules thats inside the react portfolio folder
+React-Portfolio/node_modules/
