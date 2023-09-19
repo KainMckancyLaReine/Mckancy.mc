@@ -87,17 +87,17 @@ const dataportfolio = [
         link: "#",
     },
     {
-        img: "https://picsum.photos/400/800/?grayscale",
+        img: "",
         description: "Magnetic-Charger",
         link: "#",
     },
     {
-        img: "https://picsum.photos/400/?grayscale",
+        img: "",
         description: "car-rental",
         link: "#",
     },
     {
-        img: "https://picsum.photos/400/600/?grayscale",
+        img: "",
         description: "Tour and Travel",
         link: "#",
     },
