@@ -34,7 +34,7 @@ const worktimeline = [
     {
         jobtitle: "Letterland",
         where: "Almere",
-        date: "2012-2021",
+        date: "2008-2017",
     },
 ];
 
