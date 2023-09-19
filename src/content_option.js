@@ -89,7 +89,7 @@ const dataportfolio = [
     {
         img: "",
         description: "Magnetic-Charger",
-        link: "#",
+        link: "https://github.com/KainMckancyLaReine/Magnetic-Charger",
     },
     {
         img: "",
