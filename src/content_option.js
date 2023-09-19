@@ -82,7 +82,7 @@ const services = [
 
 const dataportfolio = [
     {
-        img: "https://picsum.photos/400/?grayscale",
+        img: "nature.png",
         description: "Nature-Travel",
         link: "#",
     },
