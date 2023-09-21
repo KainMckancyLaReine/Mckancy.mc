@@ -87,7 +87,7 @@ const dataportfolio = [
         link: "https://github.com/KainMckancyLaReine/Mckancy.mc",
     },
     {
-        img: "",
+        img: "screenshot.jpg",
         description: "Magnetic-Charger",
         link: "https://github.com/KainMckancyLaReine/Magnetic-Charger",
     },
