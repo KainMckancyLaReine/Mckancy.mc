@@ -57,11 +57,11 @@ const skills = [
     },
     {
         name: "Three.js",
-        value: 80,
+        value: 45,
     },
     {
         name: "Bootstrap",
-        value: 70,
+        value: 60,
     },
 ];
 
