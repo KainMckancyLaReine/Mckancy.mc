@@ -93,13 +93,13 @@ const dataportfolio = [
     },
     {
         img: "",
-        description: "Nature-travel",
+        description: "Art-Gallery",
         link: "https://github.com/KainMckancyLaReine/-scrum-project-1-arte-gallery",
     },
     {
         img: "",
         description: "Tour and Travel",
-        link: "#",
+        link: "https://github.com/KainMckancyLaReine/Nature-Travel",
     },
     {
         img: "https://picsum.photos/400/300/?grayscale",
