@@ -82,9 +82,9 @@ const services = [
 
 const dataportfolio = [
     {
-        img: "nature.png",
-        description: "Nature-Travel",
-        link: "#",
+        img: "",
+        description: "mckancy-portfolio",
+        link: "https://github.com/KainMckancyLaReine/Mckancy.mc",
     },
     {
         img: "",
@@ -93,8 +93,8 @@ const dataportfolio = [
     },
     {
         img: "",
-        description: "car-rental",
-        link: "#",
+        description: "Nature-travel",
+        link: "",
     },
     {
         img: "",
