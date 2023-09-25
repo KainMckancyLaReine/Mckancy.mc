@@ -1,7 +1,11 @@
 {
-  "short_name": "kain",
-  "name": "Kain La Reine",
+  "name": "<Application Name>",
+  "short_name": "<Application Short Name>",
+  "theme_color": "#1976d2",
+  "background_color": "#fafafa",
+  "display": "standalone",
   "scope": "./",
+  "start_url": "./",
   "icons": [
     {
       "src": "assets/icons/icon-72x72.png",
@@ -51,9 +55,5 @@
       "type": "image/png",
       "purpose": "maskable any"
     }
-  ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  ]
 }
