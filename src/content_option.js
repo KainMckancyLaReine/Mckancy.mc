@@ -4,6 +4,13 @@ const meta = {
     description: "Kain La Reine (Front End Webdevloper) ",
 };
 
+const images = [
+    'https://iili.io/H6QLMrv.jpg',
+    'https://iili.io/JFAb8Pe.md.jpg'
+];
+
+const randomImage = images[Math.floor(Math.random() * images.length)];
+
 const introdata = {
     title: "I’m Kain Mckancy La Reine",
     animated: {
@@ -12,7 +19,7 @@ const introdata = {
         third: "UI/UX Enthusiast",
     },
     description: "Dutch front-end web developer specialized in creating engaging and visually impressive websites. Together, we will elevate your online presence to new heights. Let's collaborate to achieve your digital goals!",
-    your_img_url: "https://iili.io/H6QLMrv.jpg",
+    your_img_url: randomImage,
 };
 
 const dataabout = {
