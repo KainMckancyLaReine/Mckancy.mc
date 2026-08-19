@@ -1,0 +1,24 @@
+{
+  "name": "mckancy-portfolio",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Kain Mckancy La Reine — Creative Developer portfolio",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build && node scripts/publish.mjs",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@emailjs/browser": "^4.4.1",
+    "gsap": "^3.12.5",
+    "lenis": "^1.1.18",
+    "three": "^0.169.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.169.0",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.10"
+  }
+}
