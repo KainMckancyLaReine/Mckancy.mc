@@ -14,8 +14,14 @@ export function initHeroEntrance(isTouch: boolean): void {
     const hero = document.getElementById('hero');
     const title = document.querySelector<HTMLElement>('.hero-title');
     const photo = document.querySelector<HTMLElement>('.hero-photo-wrap');
+    const glow = document.getElementById('heroGlow');
     if (hero && title && photo) {
       hero.addEventListener('mousemove', (e) => {
+        const r = hero.getBoundingClientRect();
+        if (glow) {
+          glow.style.setProperty('--gx', `${((e.clientX - r.left) / r.width) * 100}%`);
+          glow.style.setProperty('--gy', `${((e.clientY - r.top) / r.height) * 100}%`);
+        }
         const cx = innerWidth / 2;
         const cy = innerHeight / 2;
         const dx = (e.clientX - cx) / cx;

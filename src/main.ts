@@ -4,12 +4,13 @@ import { gsap, createLenis } from './modules/motion';
 import { initCursor } from './modules/cursor';
 import { initPreloader } from './modules/preloader';
 import { initTransitionReveal } from './modules/transition';
+import { initTicker } from './modules/ticker';
 import { initAboutReveal } from './modules/about';
 import { initSkillsReveal } from './modules/skills';
 import { initWorlds } from './modules/worlds';
 import { initGallery } from './modules/gallery';
 import { initClock, initThemeToggle, initMobileDrawer } from './modules/nav';
-import { initContactForm } from './modules/contact';
+import { initContactForm, initContactReveal } from './modules/contact';
 
 function probePhoto(): void {
   const img = new Image();
@@ -30,11 +31,13 @@ function boot(): void {
   initMobileDrawer();
   initContactForm();
 
-  initTransitionReveal();
-  initAboutReveal(isDesktop);
-  initSkillsReveal();
-  initWorlds();
-  initGallery();
+  initTicker();
+  initTransitionReveal(isTouch);
+  initAboutReveal(isDesktop, isTouch);
+  initSkillsReveal(isTouch);
+  initWorlds(isTouch);
+  initGallery(isTouch);
+  initContactReveal();
 
   if (!isDesktop) {
     const heroPhoto = document.querySelector('.hero-photo-wrap');
@@ -48,14 +51,12 @@ function boot(): void {
         scrollTrigger: { trigger: heroPhoto, start: 'top 92%', once: true },
       });
     }
-    gsap.utils.toArray<HTMLElement>('.contact-info-block, .profile-card').forEach((el) => {
-      gsap.from(el, {
-        opacity: 0,
-        y: 20,
-        duration: 0.8,
-        ease: 'power3.out',
-        scrollTrigger: { trigger: el, start: 'top 88%', once: true },
-      });
+    gsap.from('.profile-card', {
+      opacity: 0,
+      y: 20,
+      duration: 0.8,
+      ease: 'power3.out',
+      scrollTrigger: { trigger: '.profile-card', start: 'top 88%', once: true },
     });
   }
 

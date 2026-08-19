@@ -47,4 +47,11 @@ export function initCursor(isTouch: boolean): void {
       el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-view'));
     });
   }
+
+  // Long-form text collapses the cursor to a thin reading caret — signals
+  // "this is prose, not a click target" as a distinct third cursor mode.
+  document.querySelectorAll<HTMLElement>('[data-cursor-read]').forEach((el) => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('cursor-read'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-read'));
+  });
 }

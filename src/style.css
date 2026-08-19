@@ -330,6 +330,16 @@ html, body {
   mix-blend-mode: normal;
 }
 .cursor-view .cursor-label { opacity: 1; transform: scale(1); }
+
+/* Reading mode — thin vertical caret instead of a ring, for prose */
+.cursor-read .cursor-dot { opacity: 0; }
+.cursor-read .cursor-ring {
+  width: 2px; height: 22px;
+  border-radius: 1px; border-color: transparent;
+  background: rgba(255,255,255,0.85);
+}
+.cursor-read .cursor-label { opacity: 0; }
+
 @media (hover: none), (pointer: coarse) { .cursor-dot, .cursor-ring { display: none; } }
 
 /* ============ PRELOADER — clean modern art piece ============ */
@@ -487,6 +497,15 @@ nav#mainNav .nav-logo .dot { color: var(--ink-3); }
   display: flex; flex-direction: column;
 }
 @media (min-width: 768px) { #hero { padding: 140px 56px 64px; } }
+
+/* Cursor-reactive ambient glow — hero's own motion signature */
+.hero-glow {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: radial-gradient(480px circle at var(--gx, 70%) var(--gy, 35%), rgba(255,106,44,0.16), transparent 70%);
+  opacity: 0; transition: opacity .7s ease;
+}
+#hero:hover .hero-glow { opacity: 1; }
+@media (hover: none), (pointer: coarse) { .hero-glow { display: none; } }
 
 .hero-top {
   display: flex; justify-content: space-between; align-items: center;
@@ -688,7 +707,11 @@ html.no-kain-photo .photo-plate::before {
 @media (min-width: 768px) { #transition { padding: 140px 56px; } }
 
 /* Ambient layers — pure CSS animation, no JS, no scroll-jack */
-.trans-motion { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+.trans-motion {
+  position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 0;
+  transition: transform 1s cubic-bezier(.2,.8,.2,1);
+  will-change: transform;
+}
 
 .tm-grid {
   position: absolute; left: -25%; right: -25%; bottom: -10%; height: 85%;
@@ -941,8 +964,16 @@ html.no-kain-photo .pre-vignette { opacity: 0.6; }
 }
 @media (min-width: 768px) { .skills-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1200px) { .skills-grid { grid-template-columns: repeat(3, 1fr); } }
-.skill-card { background: var(--paper); padding: 40px 32px; transition: background .3s ease; }
-.skill-card:hover { background: var(--paper-2); }
+.skill-card {
+  position: relative; overflow: hidden;
+  background: var(--paper); padding: 40px 32px;
+}
+.skill-card::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(280px circle at var(--mx, 50%) var(--my, 50%), rgba(255,106,44,0.10), transparent 70%);
+  opacity: 0; transition: opacity .4s ease;
+}
+.skill-card:hover::before { opacity: 1; }
 .skill-card-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.25em; color: var(--orange); margin-bottom: 20px; }
 .skill-card h3 { font-family: 'Instrument Serif', serif; font-size: 28px; font-style: italic; color: var(--ink); margin-bottom: 12px; }
 .skill-card p { color: var(--ink-2); font-size: 14px; line-height: 1.6; }
@@ -977,7 +1008,15 @@ body.dark .skill-chip { background: rgba(244,243,238,0.04); }
   position: absolute; border: 1px solid var(--line); background: var(--paper);
   overflow: hidden; box-shadow: 0 30px 80px -30px rgba(10,10,10,0.25);
   transition: transform .4s cubic-bezier(.2,.7,.2,1);
+  animation: mockupFloat 7s ease-in-out infinite;
 }
+/* Antigravity idle drift — uses the independent `translate` property so
+   it never fights the GSAP-driven `transform` (tilt) on the same element. */
+@keyframes mockupFloat {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -7px; }
+}
+@media (prefers-reduced-motion: reduce) { .mockup { animation: none; } }
 
 /* NEXA — boxed dark card for visual rhythm */
 .world[data-world="2"] { background: var(--ink); color: var(--paper); padding: 56px 32px; }
@@ -1002,9 +1041,17 @@ body.dark .skill-chip { background: rgba(244,243,238,0.04); }
   border: 1px solid var(--line);
   background: var(--paper);
   overflow: hidden;
-  transition: transform .35s cubic-bezier(.2,.7,.2,1);
+  animation-name: galleryFloat;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
 }
-.gallery-card:hover { transform: translateY(-6px); }
+/* Independent `translate` property so the idle bob never fights the
+   GSAP-driven rotate/rotateX/rotateY tilt applied to `transform`. */
+@keyframes galleryFloat {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -8px; }
+}
+@media (prefers-reduced-motion: reduce) { .gallery-card { animation: none; } }
 .gallery-card .gc-meta { position: absolute; left: 18px; bottom: 18px; right: 18px; }
 .gallery-card .gc-num { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.3em; color: inherit; opacity: 0.55; }
 .gallery-card .gc-title { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 18px; margin-top: 3px; }
@@ -1036,11 +1083,16 @@ body.dark .skill-chip { background: rgba(244,243,238,0.04); }
 .contact-info-block a:hover { opacity: 0.6; }
 
 .input {
+  --underline: 0;
   width: 100%; background: transparent; border: 0;
   border-bottom: 1px solid rgba(244,243,238,0.18);
   padding: 18px 0; color: var(--paper); font-size: 16px;
   outline: none; transition: border-color .3s;
   font-family: inherit;
+  background-image: linear-gradient(var(--paper), var(--paper));
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  background-size: calc(var(--underline) * 100%) 1px;
 }
 .input:focus { border-bottom-color: var(--paper); }
 .input::placeholder { color: rgba(244,243,238,0.4); }

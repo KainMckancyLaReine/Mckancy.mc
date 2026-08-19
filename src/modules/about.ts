@@ -25,19 +25,40 @@ function splitAboutTitleIntoWords(aboutTitle: HTMLElement): void {
   aboutTitle.innerHTML = out.join('');
 }
 
-export function initAboutReveal(isDesktop: boolean): void {
-  gsap.utils.toArray<HTMLElement>('.section-title, .contact-title').forEach((el) => {
+export function initAboutReveal(isDesktop: boolean, isTouch: boolean): void {
+  gsap.utils.toArray<HTMLElement>('.section-title').forEach((el) => {
     gsap.from(el, { y: 50, opacity: 0, duration: 1.1, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 85%' } });
   });
 
-  gsap.from('.km-founder-photo, .km-founder-text > *', {
-    y: 30,
-    opacity: 0,
-    duration: 0.9,
-    stagger: 0.08,
-    ease: 'power3.out',
-    scrollTrigger: { trigger: '.km-founder-block', start: 'top 80%' },
+  // KM.dev block — a curtain-wipe on the photo (not a fade) + text sliding
+  // in from the opposite side with a springy overshoot, distinct from
+  // both the about-title mask reveal and every other section's motion.
+  const founderTl = gsap.timeline({
+    scrollTrigger: { trigger: '.km-founder-block', start: 'top 78%' },
   });
+  founderTl.fromTo(
+    '.km-founder-photo',
+    { clipPath: 'inset(0% 0% 0% 100%)' },
+    { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.1, ease: 'power4.inOut' }
+  );
+  founderTl.from(
+    '.km-founder-text > *',
+    { x: 36, opacity: 0, duration: 0.9, stagger: 0.09, ease: 'back.out(1.6)' },
+    0.25
+  );
+
+  const profileCard = document.querySelector<HTMLElement>('.profile-card');
+  if (profileCard && !isTouch) {
+    profileCard.addEventListener('mousemove', (e) => {
+      const r = profileCard.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width - 0.5;
+      const py = (e.clientY - r.top) / r.height - 0.5;
+      gsap.to(profileCard, { rotateY: px * 8, rotateX: py * -8, duration: 0.5, ease: 'power2.out', transformPerspective: 800 });
+    });
+    profileCard.addEventListener('mouseleave', () => {
+      gsap.to(profileCard, { rotateY: 0, rotateX: 0, duration: 0.7, ease: 'elastic.out(1,0.5)' });
+    });
+  }
 
   const aboutTitle = document.querySelector<HTMLElement>('.about-title');
   if (aboutTitle) splitAboutTitleIntoWords(aboutTitle);
