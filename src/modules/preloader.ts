@@ -1,8 +1,7 @@
-import type Lenis from 'lenis';
 import { gsap, ScrollTrigger } from './motion';
 import { initHeroEntrance } from './hero';
 
-export function initPreloader(lenis: Lenis, isTouch: boolean): void {
+export function initPreloader(isTouch: boolean): void {
   const preloaderEl = document.getElementById('preloader');
   const words = document.querySelectorAll<HTMLElement>('.pre-word');
   const nameWords = document.querySelectorAll<HTMLElement>('.pre-name .word');
@@ -11,7 +10,6 @@ export function initPreloader(lenis: Lenis, isTouch: boolean): void {
     return;
   }
 
-  lenis.stop();
   document.body.style.overflow = 'hidden';
 
   gsap.to(nameWords, { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: 'expo.out', delay: 0.1 });
@@ -56,7 +54,6 @@ export function initPreloader(lenis: Lenis, isTouch: boolean): void {
       onComplete: () => {
         preloaderEl!.style.display = 'none';
         document.body.style.overflow = '';
-        lenis.start();
         initHeroEntrance(isTouch);
       },
     });

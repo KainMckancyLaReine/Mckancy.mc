@@ -29,6 +29,43 @@ export function initThemeToggle(): void {
   });
 }
 
+/**
+ * Anchor-link jump, animated by hand (no native `behavior: 'smooth'`
+ * anywhere): Chrome has a real bug where native smooth-scroll combined
+ * with `scroll-snap-type` can snap the page back to 0 mid-animation, on
+ * both `scrollTo({behavior:'smooth'})` and `scrollIntoView({behavior:
+ * 'smooth'})`. A plain rAF tween avoids the native API entirely.
+ */
+export function initSmoothAnchors(): void {
+  function animateScrollTo(targetY: number, duration = 700) {
+    const startY = window.scrollY;
+    const delta = targetY - startY;
+    const startTime = performance.now();
+    function ease(t: number) {
+      return 1 - Math.pow(1 - t, 3);
+    }
+    function step(now: number) {
+      const t = Math.min(1, (now - startTime) / duration);
+      window.scrollTo(0, startY + delta * ease(t));
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((a) => {
+    a.addEventListener('click', (e) => {
+      const id = a.getAttribute('href')?.slice(1);
+      if (!id) return;
+      const target = document.getElementById(id);
+      if (!target) return;
+      e.preventDefault();
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const targetY = Math.min(maxScroll, target.getBoundingClientRect().top + window.scrollY);
+      animateScrollTo(targetY);
+    });
+  });
+}
+
 export function initMobileDrawer(): void {
   const navToggle = document.getElementById('navToggle');
   const drawer = document.getElementById('mobileDrawer');

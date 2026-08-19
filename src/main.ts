@@ -1,6 +1,6 @@
 import './style.css';
 import { readViewportFlags } from './types';
-import { gsap, createLenis } from './modules/motion';
+import { gsap } from './modules/motion';
 import { initCursor } from './modules/cursor';
 import { initPreloader } from './modules/preloader';
 import { initTransitionReveal } from './modules/transition';
@@ -9,7 +9,7 @@ import { initAboutReveal } from './modules/about';
 import { initSkillsReveal } from './modules/skills';
 import { initWorlds } from './modules/worlds';
 import { initGallery } from './modules/gallery';
-import { initClock, initThemeToggle, initMobileDrawer } from './modules/nav';
+import { initClock, initThemeToggle, initMobileDrawer, initSmoothAnchors } from './modules/nav';
 import { initContactForm, initContactReveal } from './modules/contact';
 
 function probePhoto(): void {
@@ -23,12 +23,11 @@ probePhoto();
 function boot(): void {
   const { isTouch, isDesktop } = readViewportFlags();
 
-  const lenis = createLenis();
-
   initClock();
   initCursor(isTouch);
   initThemeToggle();
   initMobileDrawer();
+  initSmoothAnchors();
   initContactForm();
 
   initTicker();
@@ -61,7 +60,7 @@ function boot(): void {
   }
 
   // initPreloader runs the intro sequence, then kicks off the hero entrance itself.
-  initPreloader(lenis, isTouch);
+  initPreloader(isTouch);
 }
 
 if (document.readyState === 'loading') {
