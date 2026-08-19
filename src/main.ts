@@ -2,11 +2,10 @@ import './style.css';
 import { readViewportFlags } from './types';
 import { gsap, createLenis } from './modules/motion';
 import { initCursor } from './modules/cursor';
-import { initWebglBackground } from './modules/webgl-background';
 import { initPreloader } from './modules/preloader';
-import { initTransitionReveal, buildTransitionMotion } from './modules/transition';
+import { initTransitionReveal } from './modules/transition';
 import { initAboutReveal } from './modules/about';
-import { initSkillsTransformation } from './modules/skills';
+import { initSkillsReveal } from './modules/skills';
 import { initWorlds } from './modules/worlds';
 import { initGallery } from './modules/gallery';
 import { initClock, initThemeToggle, initMobileDrawer } from './modules/nav';
@@ -21,23 +20,21 @@ function probePhoto(): void {
 probePhoto();
 
 function boot(): void {
-  const { isTouch, isDesktop, reduceMotion } = readViewportFlags();
+  const { isTouch, isDesktop } = readViewportFlags();
 
   const lenis = createLenis();
 
   initClock();
   initCursor(isTouch);
-  initWebglBackground(isTouch);
   initThemeToggle();
   initMobileDrawer();
   initContactForm();
 
   initTransitionReveal();
-  buildTransitionMotion(reduceMotion);
   initAboutReveal(isDesktop);
-  initSkillsTransformation(isDesktop);
-  initWorlds(isDesktop);
-  initGallery(isDesktop);
+  initSkillsReveal();
+  initWorlds();
+  initGallery();
 
   if (!isDesktop) {
     const heroPhoto = document.querySelector('.hero-photo-wrap');

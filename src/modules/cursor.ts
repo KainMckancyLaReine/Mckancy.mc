@@ -5,6 +5,7 @@ export function initCursor(isTouch: boolean): void {
 
   const cursorDot = document.getElementById('cursorDot');
   const cursorRing = document.getElementById('cursorRing');
+  const cursorLabel = document.getElementById('cursorLabel');
   if (!cursorDot || !cursorRing) return;
 
   const cursor = { x: innerWidth / 2, y: innerHeight / 2 };
@@ -35,4 +36,15 @@ export function initCursor(isTouch: boolean): void {
       gsap.to(el, { x: mx * 0.18, y: my * 0.18, duration: 0.6, ease: 'power3.out' });
     });
   });
+
+  // Cards that open a project/site get an orange "View" cursor instead of the magnet ring
+  if (cursorLabel) {
+    document.querySelectorAll<HTMLElement>('[data-cursor-label]').forEach((el) => {
+      el.addEventListener('mouseenter', () => {
+        cursorLabel.textContent = el.dataset.cursorLabel ?? 'View';
+        document.body.classList.add('cursor-view');
+      });
+      el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-view'));
+    });
+  }
 }

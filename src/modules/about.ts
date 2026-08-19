@@ -26,16 +26,17 @@ function splitAboutTitleIntoWords(aboutTitle: HTMLElement): void {
 }
 
 export function initAboutReveal(isDesktop: boolean): void {
-  gsap.utils.toArray<HTMLElement>('.figma-head h2, .world-title, .gallery-head h2, .contact-title').forEach((el) => {
+  gsap.utils.toArray<HTMLElement>('.section-title, .contact-title').forEach((el) => {
     gsap.from(el, { y: 50, opacity: 0, duration: 1.1, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 85%' } });
   });
-  gsap.from('#skillChips .skill-chip', {
-    y: 20,
+
+  gsap.from('.km-founder-photo, .km-founder-text > *', {
+    y: 30,
     opacity: 0,
-    duration: 0.6,
-    stagger: 0.06,
+    duration: 0.9,
+    stagger: 0.08,
     ease: 'power3.out',
-    scrollTrigger: { trigger: '#skillChips', start: 'top 90%' },
+    scrollTrigger: { trigger: '.km-founder-block', start: 'top 80%' },
   });
 
   const aboutTitle = document.querySelector<HTMLElement>('.about-title');

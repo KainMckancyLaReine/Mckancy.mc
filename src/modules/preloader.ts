@@ -14,12 +14,16 @@ export function initPreloader(lenis: Lenis, isTouch: boolean): void {
   lenis.stop();
   document.body.style.overflow = 'hidden';
 
-  gsap.to(nameWords, { y: 0, opacity: 1, duration: 1.0, stagger: 0.12, ease: 'expo.out', delay: 0.15 });
-  gsap.from('.pre-meta', { opacity: 0, y: -6, duration: 0.6, stagger: 0.06, delay: 0.4 });
+  gsap.to(nameWords, { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: 'expo.out', delay: 0.1 });
+  gsap.from('.pre-meta', { opacity: 0, y: -6, duration: 0.5, stagger: 0.05, delay: 0.3 });
 
-  const totalDuration = 3600;
+  // Short by design — a portfolio shouldn't make people wait. Any
+  // interaction (click, key, scroll, touch) skips straight to the hero.
+  const totalDuration = 1400;
   const wordSlots = words.length;
   let currentWord = -1;
+  let done = false;
+
   function setWord(idx: number) {
     if (idx === currentWord) return;
     words.forEach((w, i) => {
@@ -29,10 +33,11 @@ export function initPreloader(lenis: Lenis, isTouch: boolean): void {
     });
     currentWord = idx;
   }
-  setTimeout(() => setWord(0), 600);
+  setTimeout(() => setWord(0), 400);
 
   const startTime = performance.now();
   function frame() {
+    if (done) return;
     const elapsed = performance.now() - startTime;
     const progress = Math.min(1, elapsed / totalDuration);
     const wIdx = Math.min(wordSlots - 1, Math.floor(progress * wordSlots));
@@ -42,9 +47,12 @@ export function initPreloader(lenis: Lenis, isTouch: boolean): void {
   }
 
   function finishOut() {
+    if (done) return;
+    done = true;
+    skipEvents.forEach((evt) => window.removeEventListener(evt, skip));
+
     const tl = gsap.timeline({
       defaults: { ease: 'expo.inOut' },
-      delay: 0.4,
       onComplete: () => {
         preloaderEl!.style.display = 'none';
         document.body.style.overflow = '';
@@ -52,11 +60,17 @@ export function initPreloader(lenis: Lenis, isTouch: boolean): void {
         initHeroEntrance(isTouch);
       },
     });
-    tl.to('.pre-meta', { opacity: 0, duration: 0.5 }, 0);
-    tl.to('.pre-words', { y: -10, opacity: 0, duration: 0.5 }, 0);
-    tl.to('.pre-name .word', { y: '-100%', duration: 0.8, stagger: 0.06, ease: 'expo.in' }, 0.05);
-    tl.to('#preloader', { yPercent: -100, duration: 1.0, ease: 'expo.inOut' }, 0.4);
+    tl.to('.pre-meta', { opacity: 0, duration: 0.4 }, 0);
+    tl.to('.pre-words', { y: -10, opacity: 0, duration: 0.4 }, 0);
+    tl.to('.pre-name .word', { y: '-100%', duration: 0.6, stagger: 0.05, ease: 'expo.in' }, 0.02);
+    tl.to('#preloader', { yPercent: -100, duration: 0.8, ease: 'expo.inOut' }, 0.3);
   }
+
+  const skipEvents = ['pointerdown', 'keydown', 'wheel', 'touchstart'] as const;
+  function skip() {
+    finishOut();
+  }
+  skipEvents.forEach((evt) => window.addEventListener(evt, skip, { once: true, passive: true }));
 
   requestAnimationFrame(frame);
 

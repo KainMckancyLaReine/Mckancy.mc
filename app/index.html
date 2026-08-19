@@ -67,11 +67,8 @@
 <body class="grain">
 
 
-<!-- WebGL backdrop -->
-<canvas id="webgl"></canvas>
-
 <!-- Cursor -->
-<div class="cursor-ring" id="cursorRing"></div>
+<div class="cursor-ring" id="cursorRing"><span class="cursor-label" id="cursorLabel"></span></div>
 <div class="cursor-dot" id="cursorDot"></div>
 
 <!-- ============ PRELOADER — clean modern ============ -->
@@ -92,9 +89,7 @@
     </div>
     <div class="pre-words" id="preWords">
       <span class="pre-word" data-w="0"><span class="em">Design</span> · Motion · Code</span>
-      <span class="pre-word" data-w="1">Cinematic <span class="em">interactive</span> experiences</span>
-      <span class="pre-word" data-w="2">Crafted in <span class="em">Amsterdam</span></span>
-      <span class="pre-word" data-w="3">Portfolio <span class="em">2026</span></span>
+      <span class="pre-word" data-w="1">Crafted in <span class="em">Amsterdam</span></span>
     </div>
   </div>
 
@@ -205,8 +200,6 @@
     <div class="tm-orb tm-orb-a"></div>
     <div class="tm-orb tm-orb-b"></div>
     <div class="tm-orb tm-orb-c"></div>
-    <div class="tm-streaks" id="tmStreaks"></div>
-    <div class="tm-particles" id="tmParticles"></div>
     <div class="tm-vignette"></div>
   </div>
 
@@ -280,320 +273,82 @@
         <div class="about-quote">My goal is not simply to create websites, but to craft immersive digital experiences that leave a lasting impression through storytelling, interaction and cinematic motion.</div>
       </div>
     </div>
+
+    <!-- KM.dev founder block — photo slot uses kain.jpg until a dedicated photo is supplied -->
+    <div class="km-founder-block">
+      <div class="km-founder-photo" style="background-image:url('../assets/kain.jpg');" role="img" aria-label="Kain Mckancy La Reine, founder of KM.dev"></div>
+      <div class="km-founder-text">
+        <div class="eyebrow">Founder — KM.dev</div>
+        <h3 class="km-founder-title">Building brand systems <span class="it" style="color:var(--orange);">under my own name.</span></h3>
+        <p>In 2026 I founded <strong>KM.dev</strong>, a small brand-system studio built on everything I learned shipping Playa Bootverhuur, Wildcore Retreats and TuinToppersPro — strategy, identity and a working website, delivered as one fixed-price system instead of three separate hand-offs.</p>
+        <p>It's the same instinct that runs through this whole portfolio: a brand should feel considered in every pixel, not assembled from a template. KM.dev is where I get to build that for other founders, from the first sketch to the site going live.</p>
+        <a href="https://kainmckancylareine.github.io/KM-DEV/index.html" target="_blank" rel="noopener" class="hero-cta-ghost km-founder-cta" data-magnet>Visit KM.dev ↗</a>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- ============ SKILLS — Figma → Reality transformation ============ -->
-<section id="skills">
-  <div class="figma-stage" id="skillsStage">
-    <div class="figma-stage-inner">
+<section id="skills" class="section-pad">
+  <div class="container-x">
+    <div class="eyebrow">Chapter 03 — Craft</div>
+    <h2 class="section-title">What I bring<br/><span class="it" style="color:var(--orange);">to a project.</span></h2>
+    <p class="section-lede">Design, motion and code, handled end-to-end — with KM.dev I package it as one fixed-price system for founders who'd rather not juggle three different freelancers.</p>
 
-      <div class="figma-head">
-        <div class="head-row">
-          <div>
-            <div class="eyebrow">Chapter 03 — Transformation</div>
-            <h2>Design becomes<br/><span class="it" style="color:var(--orange);">reality.</span></h2>
-            <p style="max-width:540px;margin-top:18px;color:var(--ink-2);font-size:16px;line-height:1.65;">
-              From a static Figma file to a working website — in four stages. Scroll to play the transformation.
-            </p>
-          </div>
-          <div class="phase-rail" id="phaseRail">
-            <div class="phase-cell active" data-phase="0">
-              <span class="num">01</span><span class="name">Design<span class="it">.</span></span>
-            </div>
-            <div class="phase-cell" data-phase="1">
-              <span class="num">02</span><span class="name">Deconstruct<span class="it">.</span></span>
-            </div>
-            <div class="phase-cell" data-phase="2">
-              <span class="num">03</span><span class="name">Assemble<span class="it">.</span></span>
-            </div>
-            <div class="phase-cell" data-phase="3">
-              <span class="num">04</span><span class="name">Live<span class="it">.</span></span>
-            </div>
-          </div>
-        </div>
+    <div class="skills-grid">
+      <div class="skill-card">
+        <div class="skill-card-num">01</div>
+        <h3>Design<span style="color:var(--orange);">.</span></h3>
+        <p>Interfaces shaped by cinema — pacing, lighting and atmosphere translated into layout, type and color.</p>
       </div>
-
-      <div class="figma-canvas-wrap">
-        <div class="figma-window" id="figmaWindow">
-
-          <!-- Figma toolbar -->
-          <div class="fig-toolbar" id="figToolbar">
-            <div class="tb-left">
-              <span class="tb-file">
-                <span class="fig-logo" aria-label="Figma">
-                  <span class="s1"></span><span class="s2"></span><span class="s3"></span><span class="s4"></span><span class="s5"></span>
-                </span>
-                <span class="file-name">studio.fig</span>
-                <span class="file-meta">— Cinematic Studio</span>
-              </span>
-            </div>
-            <div class="tb-tools">
-              <span class="tb-tool active" title="Move"><span class="ti move"></span></span>
-              <span class="tb-tool" title="Frame"><span class="ti frame"></span></span>
-              <span class="tb-tool" title="Text"><span class="ti text"></span></span>
-              <span class="tb-tool" title="Component"><span class="ti comp"></span></span>
-              <span class="tb-tool" title="Comment"><span class="ti dot"></span></span>
-              <span class="tb-zoom">100%</span>
-            </div>
-            <div class="tb-right">
-              <span class="tb-avatar avatar-photo" title="Kain">K</span>
-              <span class="tb-share">Share</span>
-            </div>
-          </div>
-
-          <div class="fig-body">
-
-            <!-- Left layer panel -->
-            <aside class="fig-panel-left" id="figPanelLeft">
-              <div class="panel-h">Pages</div>
-              <div class="fig-layer"><span class="layer-icon frame"></span>Home</div>
-              <div class="fig-layer selected"><span class="layer-icon frame"></span>Hero</div>
-              <div class="fig-layer"><span class="layer-icon frame"></span>Footer</div>
-
-              <div class="panel-h">Layers <span class="pin">SEL</span></div>
-              <div class="fig-layer indent-1"><span class="layer-icon frame"></span>Header / Nav</div>
-              <div class="fig-layer indent-1 selected"><span class="layer-icon frame"></span>Hero / Section</div>
-              <div class="fig-layer indent-2"><span class="layer-icon text"></span>Title</div>
-              <div class="fig-layer indent-2"><span class="layer-icon text"></span>Subtitle</div>
-              <div class="fig-layer indent-2"><span class="layer-icon cta"></span>CTA Button</div>
-              <div class="fig-layer indent-1"><span class="layer-icon comp"></span>Card / 01</div>
-              <div class="fig-layer indent-1"><span class="layer-icon comp"></span>Card / 02</div>
-              <div class="fig-layer indent-1"><span class="layer-icon img"></span>Image / Frame</div>
-              <div class="fig-layer indent-1"><span class="layer-icon frame"></span>Footer / Meta</div>
-            </aside>
-
-            <!-- Canvas -->
-            <div class="fig-canvas" id="figCanvas">
-              <!-- Frame tags -->
-              <div class="figma-frame" id="ff-header" style="left:5%; top:5%; width:90%; height:11%;">
-                <div class="frame-tag">Header</div>
-                <div class="ftitle">01 — Header / Navigation</div>
-                <div class="fbody" style="display:flex; align-items:center; justify-content:space-between; padding:8px 12px;">
-                  <div class="bar" style="width:50px;"></div>
-                  <div style="display:flex; gap:8px;">
-                    <div class="bar" style="width:32px;"></div>
-                    <div class="bar" style="width:32px;"></div>
-                    <div class="bar" style="width:32px;"></div>
-                    <div class="bar solid" style="width:48px;"></div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="figma-frame selected" id="ff-hero" style="left:5%; top:20%; width:56%; height:48%;">
-                <div class="fig-handle h-tl"></div>
-                <div class="fig-handle h-tr"></div>
-                <div class="fig-handle h-bl"></div>
-                <div class="fig-handle h-br"></div>
-                <div class="frame-tag">Hero</div>
-                <div class="ftitle">02 — Hero / Section</div>
-                <div class="fbody">
-                  <div class="bar w-80" style="height:14px; margin-bottom:10px;"></div>
-                  <div class="bar w-60" style="height:14px; margin-bottom:14px;"></div>
-                  <div class="bar w-40" style="height:6px; margin-bottom:6px;"></div>
-                  <div class="bar w-60" style="height:6px; margin-bottom:6px;"></div>
-                  <div class="bar w-40" style="height:6px;"></div>
-                  <div class="bar solid" style="margin-top:18px; width:96px; height:26px;"></div>
-                </div>
-              </div>
-
-              <div class="figma-frame" id="ff-card-a" style="left:63%; top:20%; width:32%; height:22%;">
-                <div class="frame-tag">Card 01</div>
-                <div class="ftitle">03 — Card / 01</div>
-                <div class="fbody">
-                  <div class="bar w-60" style="height:8px;"></div>
-                  <div class="bar w-40" style="height:5px;"></div>
-                  <div class="bar dim" style="width:50%; margin-top:12px;"></div>
-                </div>
-              </div>
-
-              <div class="figma-frame" id="ff-card-b" style="left:63%; top:46%; width:32%; height:22%;">
-                <div class="frame-tag">Card 02</div>
-                <div class="ftitle">04 — Card / 02</div>
-                <div class="fbody">
-                  <div class="bar w-60" style="height:8px;"></div>
-                  <div class="bar w-40" style="height:5px;"></div>
-                  <div class="bar solid" style="width:70%; margin-top:12px;"></div>
-                </div>
-              </div>
-
-              <div class="figma-frame" id="ff-image" style="left:5%; top:72%; width:38%; height:22%; background:linear-gradient(135deg,#dedbd0,#bbb6a8);">
-                <div class="frame-tag">Image / Frame</div>
-              </div>
-
-              <div class="figma-frame" id="ff-footer" style="left:45%; top:72%; width:50%; height:22%;">
-                <div class="frame-tag">Footer</div>
-                <div class="ftitle">05 — Footer / Meta</div>
-                <div class="fbody" style="display:flex; align-items:center; justify-content:space-between;">
-                  <div class="bar" style="width:60px;"></div>
-                  <div style="display:flex; gap:6px;">
-                    <div class="bar" style="width:20px;"></div>
-                    <div class="bar" style="width:20px;"></div>
-                    <div class="bar" style="width:20px;"></div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Comments / pins -->
-              <div class="fig-comment" id="cmt-1" style="left:60%; top:14%;"><span>1</span></div>
-              <div class="fig-comment" id="cmt-2" style="left:90%; top:48%;"><span>2</span></div>
-
-              <!-- Assembly guide lines (hidden, shown in phase 3) -->
-              <div class="assembly-guide v" id="ag-1" style="left:5%; top:0; height:100%;"></div>
-              <div class="assembly-guide v" id="ag-2" style="left:95%; top:0; height:100%;"></div>
-              <div class="assembly-guide v" id="ag-3" style="left:61%; top:0; height:100%;"></div>
-              <div class="assembly-guide h" id="ag-4" style="top:20%; left:0; width:100%;"></div>
-              <div class="assembly-guide h" id="ag-5" style="top:72%; left:0; width:100%;"></div>
-
-              <!-- LIVE — colorful blog magazine -->
-              <div class="fig-live" id="figLive">
-                <div class="fig-live-top">
-                  <div class="brand">studio<span class="dot">.</span> <span style="font-size:11px; font-family:'JetBrains Mono', monospace; letter-spacing:0.2em; color:var(--ink-3);">— BLOG</span></div>
-                  <div class="menu">
-                    <span>Articles</span>
-                    <span class="active">Featured</span>
-                    <span>Authors</span>
-                  </div>
-                  <div class="sub">Subscribe</div>
-                </div>
-                <div class="fig-live-body">
-                  <div class="fig-live-article">
-                    <div class="fig-live-hero">
-                      <div class="issue">Issue 014 · March 2026</div>
-                      <div class="img-tag">Cover Story</div>
-                    </div>
-                    <div class="fig-live-tags">
-                      <span class="fig-live-tag t-orange">Film</span>
-                      <span class="fig-live-tag t-blue">Design</span>
-                      <span class="fig-live-tag t-pink">Motion</span>
-                      <span class="fig-live-tag t-ghost">6 min read</span>
-                    </div>
-                    <h3 class="fig-live-title">The art of <span class="it">cinematic</span> interfaces.</h3>
-                    <p class="fig-live-excerpt">A short essay on slow, considered interfaces — where motion isn't decoration but storytelling, and every transition earns its place on screen.</p>
-                    <div class="fig-live-byline">
-                      <div class="fig-live-author">K</div>
-                      <span class="who">Kain Mckancy</span>
-                      <span class="dot">·</span>
-                      <span>March 14, 2026</span>
-                    </div>
-                  </div>
-
-                  <aside class="fig-live-side">
-                    <h4>More articles</h4>
-                    <div class="fig-related">
-                      <div class="fig-related-thumb c-orange"></div>
-                      <div class="fig-related-text">
-                        <div class="rt">A studio's first <span class="it">year.</span></div>
-                        <div class="rm">Notes · 4 min</div>
-                      </div>
-                    </div>
-                    <div class="fig-related">
-                      <div class="fig-related-thumb c-blue"></div>
-                      <div class="fig-related-text">
-                        <div class="rt">On building with <span class="it">type.</span></div>
-                        <div class="rm">Design · 7 min</div>
-                      </div>
-                    </div>
-                    <div class="fig-related">
-                      <div class="fig-related-thumb c-pink"></div>
-                      <div class="fig-related-text">
-                        <div class="rt">Editorial pacing on the web.</div>
-                        <div class="rm">Motion · 5 min</div>
-                      </div>
-                    </div>
-                    <div class="fig-related">
-                      <div class="fig-related-thumb c-dark"></div>
-                      <div class="fig-related-text">
-                        <div class="rt">The case for slow <span class="it">scroll.</span></div>
-                        <div class="rm">Interaction · 9 min</div>
-                      </div>
-                    </div>
-
-                    <div class="fig-live-newsletter">
-                      <div class="lbl">Newsletter</div>
-                      <div class="copy">A monthly note on motion design.</div>
-                      <div class="input">
-                        <span>your@email.com</span>
-                        <b>Join</b>
-                      </div>
-                    </div>
-                  </aside>
-                </div>
-              </div>
-            </div>
-
-            <!-- Right properties panel -->
-            <aside class="fig-panel-right" id="figPanelRight">
-              <div class="fig-prop-group">
-                <div class="ph">Design</div>
-                <div class="fig-prop"><span class="pk">Position X</span><span class="pv">24</span></div>
-                <div class="fig-prop"><span class="pk">Position Y</span><span class="pv">120</span></div>
-                <div class="fig-prop"><span class="pk">Width</span><span class="pv">624</span></div>
-                <div class="fig-prop"><span class="pk">Height</span><span class="pv">320</span></div>
-              </div>
-              <div class="fig-prop-group">
-                <div class="ph">Typography</div>
-                <div class="fig-prop"><span class="pk">Family</span><span class="pv">Instrument</span></div>
-                <div class="fig-prop"><span class="pk">Weight</span><span class="pv">Regular</span></div>
-                <div class="fig-prop"><span class="pk">Size</span><span class="pv">96 px</span></div>
-              </div>
-              <div class="fig-prop-group">
-                <div class="ph">Spacing</div>
-                <div class="fig-prop"><span class="pk">Auto layout</span><span class="pv">Vertical</span></div>
-                <div class="fig-prop"><span class="pk">Gap</span><span class="pv">16</span></div>
-                <div class="fig-prop"><span class="pk">Padding</span><span class="pv">24</span></div>
-              </div>
-              <div class="fig-prop-group">
-                <div class="ph">Local styles</div>
-                <div class="fig-swatch-row">
-                  <span class="fig-sw" style="background:#F24E1E;" title="Brand · Red"></span>
-                  <span class="fig-sw" style="background:#FF7262;" title="Brand · Orange"></span>
-                  <span class="fig-sw" style="background:#A259FF;" title="Brand · Purple"></span>
-                  <span class="fig-sw" style="background:#1ABCFE;" title="Brand · Blue"></span>
-                  <span class="fig-sw" style="background:#0ACF83;" title="Brand · Green"></span>
-                </div>
-                <div class="fig-prop" style="margin-top:8px;"><span class="pk">Fill</span><span class="pv" style="display:flex;align-items:center;gap:5px;"><span style="width:9px;height:9px;background:#F24E1E;display:inline-block;border-radius:2px;"></span>F24E1E</span></div>
-              </div>
-            </aside>
-
-          </div><!-- /.fig-body -->
-
-          <!-- Phase description (overlay) -->
-          <div class="phase-desc" id="phaseDesc">
-            <span class="phase-desc-line active" data-phase-line="0">
-              <span class="pdh">Phase 01 · Design</span>
-            </span>
-            <span class="phase-desc-line" data-phase-line="1">
-              <span class="pdh">Phase 02 · Deconstruct</span>
-            </span>
-            <span class="phase-desc-line" data-phase-line="2">
-              <span class="pdh">Phase 03 · Assemble</span>
-            </span>
-            <span class="phase-desc-line" data-phase-line="3">
-              <span class="pdh">Phase 04 · Live</span>
-            </span>
-          </div>
-        </div>
+      <div class="skill-card">
+        <div class="skill-card-num">02</div>
+        <h3>Motion<span style="color:var(--orange);">.</span></h3>
+        <p>GSAP-driven interaction that earns its place — every transition tells part of the story, nothing moves just to move.</p>
       </div>
-
-      <div class="skill-chips" id="skillChips">
-        <span class="skill-chip">JavaScript</span>
-        <span class="skill-chip">Tailwind</span>
-        <span class="skill-chip">React</span>
-        <span class="skill-chip">Three.js</span>
-        <span class="skill-chip">GSAP</span>
-        <span class="skill-chip">Figma</span>
+      <div class="skill-card">
+        <div class="skill-card-num">03</div>
+        <h3>Development<span style="color:var(--orange);">.</span></h3>
+        <p>Full-stack builds in React and TypeScript, shipped with modern tooling — fast, accessible and built to actually go live.</p>
       </div>
+      <div class="skill-card">
+        <div class="skill-card-num">04</div>
+        <h3>Brand systems<span style="color:var(--orange);">.</span></h3>
+        <p>Strategy, identity and website as one package — through KM.dev, delivered fixed-price and production-ready.</p>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-num">05</div>
+        <h3>Copywriting<span style="color:var(--orange);">.</span></h3>
+        <p>Words that carry the same tone as the design — clear, confident, and written to actually convert.</p>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-num">06</div>
+        <h3>Deployment<span style="color:var(--orange);">.</span></h3>
+        <p>From Figma file to live domain — SEO fundamentals, accessibility and performance baked in from day one.</p>
+      </div>
+    </div>
 
+    <div class="skill-chips" id="skillChips">
+      <span class="skill-chip">TypeScript</span>
+      <span class="skill-chip">React</span>
+      <span class="skill-chip">GSAP</span>
+      <span class="skill-chip">Vite</span>
+      <span class="skill-chip">JavaScript</span>
+      <span class="skill-chip">Figma</span>
+      <span class="skill-chip">CSS</span>
     </div>
   </div>
 </section>
 
 <!-- ============ WORLDS: Playa, NEXA, Wildcore, TJEZ, BitQuiz ============ -->
-<section id="worlds">
-  <div class="worlds-stage" id="worldsStage">
-    <div class="world-counter"><span id="worldNum">01</span> / 07</div>
-    <div class="world-label-bl">Selected Work — 2024 / 2026</div>
+<section id="worlds" class="section-pad-lg">
+  <div class="container-x">
+    <div class="eyebrow">Chapter 04 — Selected Work</div>
+    <h2 class="section-title">Live work,<br/><span class="it" style="color:var(--orange);">not concepts.</span></h2>
+    <p class="section-lede">Seven projects shipped between 2024 and 2026 — from first sketch to live domain.</p>
+  </div>
+
+  <div class="projects-list container-x" id="projectsList">
 
     <!-- World 1: Playa Bootverhuur -->
     <div class="world" data-world="1">
@@ -609,7 +364,7 @@
           <!-- Mockup A — Landing page (clickable browser window) -->
           <a href="https://playabootverhuur.nl" target="_blank" rel="noopener"
              class="mockup playa-card"
-             style="top:0; right:0; width:78%; height:78%;">
+             style="top:0; right:0; width:78%; height:78%;" data-cursor-label="View">
             <!-- Browser chrome -->
             <div class="playa-chrome">
               <div class="playa-dots"><span></span><span></span><span></span></div>
@@ -634,7 +389,7 @@
           <!-- Mockup B — Admin dashboard (clickable browser window, dark variant) -->
           <a href="https://playabootverhuur.nl" target="_blank" rel="noopener"
              class="mockup playa-card playa-card-dark"
-             style="bottom:0; left:0; width:60%; height:60%;">
+             style="bottom:0; left:0; width:60%; height:60%;" data-cursor-label="View">
             <div class="playa-chrome chrome-dark">
               <div class="playa-dots"><span></span><span></span><span></span></div>
               <div class="playa-url url-dark">
@@ -670,7 +425,7 @@
           <!-- Mockup A — Command Center -->
           <a href="https://kainmckancylareine.github.io/NEXA/command-center.html" target="_blank" rel="noopener"
              class="mockup playa-card playa-card-dark"
-             style="top:0; right:0; width:80%; height:78%;">
+             style="top:0; right:0; width:80%; height:78%;" data-cursor-label="View">
             <div class="playa-chrome chrome-dark">
               <div class="playa-dots"><span></span><span></span><span></span></div>
               <div class="playa-url url-dark">
@@ -716,7 +471,7 @@
           <!-- Mockup B — Landing -->
           <a href="https://kainmckancylareine.github.io/NEXA/index.html" target="_blank" rel="noopener"
              class="mockup playa-card"
-             style="bottom:0; left:0; width:56%; height:56%;">
+             style="bottom:0; left:0; width:56%; height:56%;" data-cursor-label="View">
             <div class="playa-chrome">
               <div class="playa-dots"><span></span><span></span><span></span></div>
               <div class="playa-url">
@@ -756,7 +511,7 @@
 
           <a href="https://wildcore-retreats.nl/" target="_blank" rel="noopener"
              class="mockup playa-card"
-             style="top:0; right:0; width:78%; height:78%;">
+             style="top:0; right:0; width:78%; height:78%;" data-cursor-label="View">
             <div class="playa-chrome">
               <div class="playa-dots"><span></span><span></span><span></span></div>
               <div class="playa-url">
@@ -777,7 +532,7 @@
 
           <a href="https://wildcore-retreats.nl/" target="_blank" rel="noopener"
              class="mockup playa-card playa-card-dark"
-             style="bottom:0; left:0; width:56%; height:56%;">
+             style="bottom:0; left:0; width:56%; height:56%;" data-cursor-label="View">
             <div class="playa-chrome chrome-dark">
               <div class="playa-dots"><span></span><span></span><span></span></div>
               <div class="playa-url url-dark">
@@ -813,7 +568,7 @@
 
           <a href="https://kainmckancylareine.github.io/tjez-photo/portraits.html" target="_blank" rel="noopener"
              class="mockup playa-card"
-             style="top:0; left:0; width:78%; height:78%;">
+             style="top:0; left:0; width:78%; height:78%;" data-cursor-label="View">
             <div class="playa-chrome">
               <div class="playa-dots"><span></span><span></span><span></span></div>
               <div class="playa-url">
@@ -834,7 +589,7 @@
 
           <a href="https://kainmckancylareine.github.io/tjez-photo/corporate.html" target="_blank" rel="noopener"
              class="mockup playa-card playa-card-dark"
-             style="bottom:0; right:0; width:56%; height:56%;">
+             style="bottom:0; right:0; width:56%; height:56%;" data-cursor-label="View">
             <div class="playa-chrome chrome-dark">
               <div class="playa-dots"><span></span><span></span><span></span></div>
               <div class="playa-url url-dark">
@@ -870,7 +625,7 @@
 
           <a href="https://kainmckancylareine.github.io/BIT-QUIZ/" target="_blank" rel="noopener"
              class="mockup playa-card"
-             style="inset:0;">
+             style="inset:0;" data-cursor-label="View">
             <div class="playa-chrome">
               <div class="playa-dots"><span></span><span></span><span></span></div>
               <div class="playa-url">
@@ -928,7 +683,7 @@
 
           <a href="https://tuintopperpro.nl/" target="_blank" rel="noopener"
              class="mockup playa-card"
-             style="top:0; left:0; width:78%; height:78%;">
+             style="top:0; left:0; width:78%; height:78%;" data-cursor-label="View">
             <div class="playa-chrome">
               <div class="playa-dots"><span></span><span></span><span></span></div>
               <div class="playa-url">
@@ -949,7 +704,7 @@
 
           <a href="https://tuintopperpro.nl/projecten" target="_blank" rel="noopener"
              class="mockup playa-card playa-card-dark"
-             style="bottom:0; right:0; width:56%; height:56%;">
+             style="bottom:0; right:0; width:56%; height:56%;" data-cursor-label="View">
             <div class="playa-chrome chrome-dark">
               <div class="playa-dots"><span></span><span></span><span></span></div>
               <div class="playa-url url-dark">
@@ -985,7 +740,7 @@
 
           <a href="https://kainmckancylareine.github.io/KM-DEV/index.html" target="_blank" rel="noopener"
              class="mockup playa-card playa-card-dark"
-             style="top:0; right:0; width:80%; height:78%;">
+             style="top:0; right:0; width:80%; height:78%;" data-cursor-label="View">
             <div class="playa-chrome chrome-dark">
               <div class="playa-dots"><span></span><span></span><span></span></div>
               <div class="playa-url url-dark">
@@ -1031,22 +786,12 @@
 </section>
 
 <!-- ============ GALLERY — tornado spiral ============ -->
-<section id="gallery-section">
-  <div class="gallery-stage" id="galleryStage">
+<section id="gallery-section" class="section-pad-lg">
+  <div class="container-x">
+    <div class="eyebrow">Chapter 05 — Visual Notes</div>
+    <h2 class="section-title">Floating<br/><span class="it" style="color:var(--orange);">gallery.</span></h2>
 
-    <div class="gallery-head">
-      <div>
-        <div class="eyebrow">Chapter 05 — Suspended Frames</div>
-        <h2>Floating<br/><span class="it" style="color:var(--orange);">gallery.</span></h2>
-      </div>
-      <div class="g-counter">
-        <span><span class="num" id="galleryNum">01</span> / 10</span>
-        <span>Tornado · Spiral</span>
-      </div>
-    </div>
-
-    <div class="gallery-tornado">
-      <div class="gallery-spiral" id="gallerySpiral">
+    <div class="gallery-grid" id="galleryGrid">
 
         <div class="gallery-card" data-i="0" style="background-image:url('../assets/kain.jpg'); background-size:cover; background-position:center 25%; color:#f4f3ee;">
           <div style="position:absolute; inset:0; background:linear-gradient(180deg, transparent 45%, rgba(0,0,0,0.6));"></div>
@@ -1117,7 +862,6 @@
           <div class="gc-meta"><div class="gc-num">Frame 010</div><div class="gc-title">Aurora <span class="em">drift</span></div></div>
         </div>
 
-      </div>
     </div>
   </div>
 </section>
