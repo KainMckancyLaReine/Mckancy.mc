@@ -1,4 +1,4 @@
-import { gsap, ScrollTrigger } from './motion';
+import { gsap, ScrollTrigger, rafThrottle } from './motion';
 
 /**
  * Chapter 03 — "The Craft Reel".
@@ -8,7 +8,7 @@ import { gsap, ScrollTrigger } from './motion';
  * effectively scrubbing a timeline rather than watching an autoplay:
  *
  *   · the heading is split per character and lands with a rotateX fold
- *   · outgoing frames recede into Z, blur and tilt away from camera
+ *   · outgoing frames recede into Z and tilt away from camera
  *   · incoming frames rise from -Z with the opposite tilt
  *   · an orange shutter wipes across on every cut
  *   · a rail, a fill bar and a tabular counter report the position
@@ -113,6 +113,13 @@ function initHeading(reduceMotion: boolean): void {
     ease: 'expo.out',
     stagger: { each: 0.022, from: 'start' },
     scrollTrigger: { trigger: heading, start: 'top 86%', once: true },
+    // The fold plays exactly once. Stripping the transforms afterwards
+    // (and the parent's perspective with them) lets the browser release
+    // one compositor layer per character — two dozen of them here.
+    onComplete: () => {
+      gsap.set(chars, { clearProps: 'all' });
+      gsap.set(heading, { clearProps: 'perspective' });
+    },
   });
 }
 
@@ -132,14 +139,28 @@ function initStackedFallback(frames: HTMLElement[], reduceMotion: boolean): void
   });
 }
 
-/** Cursor-tracked spotlight, written as CSS custom properties (no rAF). */
+/**
+ * Cursor-tracked spotlight. The rect is cached on enter and the write is
+ * batched into one rAF, so moving the mouse can never force a layout
+ * read per pointer event.
+ */
 function initSpotlight(frames: HTMLElement[]): void {
   frames.forEach((frame) => {
-    frame.addEventListener('mousemove', (e) => {
-      const r = frame.getBoundingClientRect();
-      frame.style.setProperty('--mx', `${((e.clientX - r.left) / r.width) * 100}%`);
-      frame.style.setProperty('--my', `${((e.clientY - r.top) / r.height) * 100}%`);
+    let rect: DOMRect | null = null;
+    frame.addEventListener('mouseenter', () => {
+      rect = frame.getBoundingClientRect();
     });
+    frame.addEventListener('mouseleave', () => {
+      rect = null;
+    });
+    frame.addEventListener(
+      'mousemove',
+      rafThrottle((e: MouseEvent) => {
+        const r = rect ?? frame.getBoundingClientRect();
+        frame.style.setProperty('--mx', `${((e.clientX - r.left) / r.width) * 100}%`);
+        frame.style.setProperty('--my', `${((e.clientY - r.top) / r.height) * 100}%`);
+      }) as EventListener
+    );
   });
 }
 
@@ -191,9 +212,13 @@ function initReel(stage: HTMLElement, frames: HTMLElement[]): void {
   const counter = document.getElementById('craftCounter');
   const shutter = document.getElementById('craftShutter');
 
-  const RESTING = { z: 0, y: 0, rotateX: 0, scale: 1, autoAlpha: 1, filter: 'blur(0px)' };
-  const AHEAD = { z: -680, y: 130, rotateX: 24, scale: 0.9, autoAlpha: 0, filter: 'blur(9px)' };
-  const BEHIND = { z: -300, y: -90, rotateX: -20, scale: 0.94, autoAlpha: 0, filter: 'blur(8px)' };
+  // Transform + opacity only. An animated `filter: blur()` on a frame this
+  // large re-rasterises it every single frame of the scrub — the depth
+  // reads just as well from z/scale/rotateX, and this stays on the
+  // compositor.
+  const RESTING = { z: 0, y: 0, rotateX: 0, scale: 1, autoAlpha: 1 };
+  const AHEAD = { z: -680, y: 130, rotateX: 24, scale: 0.9, autoAlpha: 0 };
+  const BEHIND = { z: -300, y: -90, rotateX: -20, scale: 0.94, autoAlpha: 0 };
 
   frames.forEach((frame, i) => {
     gsap.set(frame, { transformPerspective: 1400, transformOrigin: '50% 50%' });
@@ -253,10 +278,24 @@ function initReel(stage: HTMLElement, frames: HTMLElement[]): void {
   }
 
   if (bar) {
-    timeline.fromTo(bar, { height: '0%' }, { height: '100%', duration: total - 1 }, 0);
+    // scaleY, not height — animating height would re-run layout on the
+    // rail on every frame of the scrub.
+    timeline.fromTo(bar, { scaleY: 0 }, { scaleY: 1, duration: total - 1 }, 0);
   }
 
   setActive(0);
+
+  // The frames only need compositor layers while the reel is actually on
+  // screen; holding six promoted layers for the whole page costs memory
+  // and slows every unrelated scroll.
+  ScrollTrigger.create({
+    trigger: stage,
+    start: 'top bottom',
+    end: () => `+=${total * 620 + window.innerHeight * 2}`,
+    onToggle: (self) => {
+      gsap.set(frames, { willChange: self.isActive ? 'transform, opacity' : 'auto' });
+    },
+  });
 
   // Recalculate the pin (and everything downstream of it) after fonts and
   // images settle, so the reel never ends up measured against a stale height.

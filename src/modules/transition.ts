@@ -1,4 +1,4 @@
-import { gsap, ScrollTrigger } from './motion';
+import { gsap, ScrollTrigger, rafThrottle } from './motion';
 
 /**
  * Lightweight scroll-reveal for the "I make websites that move" statement.
@@ -26,13 +26,21 @@ export function initTransitionReveal(isTouch: boolean): void {
     const section = document.getElementById('transition');
     const motion = document.querySelector<HTMLElement>('.trans-motion');
     if (section && motion) {
-      section.addEventListener('mousemove', (e) => {
-        const r = section.getBoundingClientRect();
-        const dx = (e.clientX - r.left) / r.width - 0.5;
-        const dy = (e.clientY - r.top) / r.height - 0.5;
-        motion.style.transform = `translate3d(${dx * -30}px, ${dy * -20}px, 0)`;
+      let rect: DOMRect | null = null;
+      section.addEventListener('mouseenter', () => {
+        rect = section.getBoundingClientRect();
       });
+      section.addEventListener(
+        'mousemove',
+        rafThrottle((e: MouseEvent) => {
+          const r = rect ?? section.getBoundingClientRect();
+          const dx = (e.clientX - r.left) / r.width - 0.5;
+          const dy = (e.clientY - r.top) / r.height - 0.5;
+          motion.style.transform = `translate3d(${dx * -30}px, ${dy * -20}px, 0)`;
+        }) as EventListener
+      );
       section.addEventListener('mouseleave', () => {
+        rect = null;
         motion.style.transform = 'translate3d(0, 0, 0)';
       });
     }

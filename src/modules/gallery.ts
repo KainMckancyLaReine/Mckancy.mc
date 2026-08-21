@@ -1,4 +1,4 @@
-import { gsap } from './motion';
+import { gsap, rafThrottle } from './motion';
 
 /**
  * Gallery — frames rotate in from random little angles (not a uniform
@@ -34,20 +34,30 @@ export function initGallery(isTouch: boolean): void {
 
   if (!isTouch) {
     cards.forEach((card) => {
-      card.addEventListener('mousemove', (e) => {
-        const r = card.getBoundingClientRect();
-        const dx = (e.clientX - r.left) / r.width - 0.5;
-        const dy = (e.clientY - r.top) / r.height - 0.5;
-        gsap.to(card, {
-          rotateY: dx * 11,
-          rotateX: dy * -11,
-          scale: 1.03,
-          zIndex: 5,
-          duration: 0.4,
-          ease: 'power2.out',
-        });
+      // Rect cached on enter, write batched to one rAF — the tilt used to
+      // force a layout read on every pointer event.
+      let rect: DOMRect | null = null;
+      card.addEventListener('mouseenter', () => {
+        rect = card.getBoundingClientRect();
       });
+      card.addEventListener(
+        'mousemove',
+        rafThrottle((e: MouseEvent) => {
+          const r = rect ?? card.getBoundingClientRect();
+          const dx = (e.clientX - r.left) / r.width - 0.5;
+          const dy = (e.clientY - r.top) / r.height - 0.5;
+          gsap.to(card, {
+            rotateY: dx * 11,
+            rotateX: dy * -11,
+            scale: 1.03,
+            zIndex: 5,
+            duration: 0.4,
+            ease: 'power2.out',
+          });
+        }) as EventListener
+      );
       card.addEventListener('mouseleave', () => {
+        rect = null;
         gsap.to(card, {
           rotateY: 0,
           rotateX: 0,

@@ -11,12 +11,13 @@ import { initWorlds } from './modules/worlds';
 import { initGallery } from './modules/gallery';
 import { initClock, initThemeToggle, initMobileDrawer, initSmoothAnchors } from './modules/nav';
 import { initContactForm, initContactReveal } from './modules/contact';
+import { initIdleAnimations } from './modules/idle';
 
 function probePhoto(): void {
   const img = new Image();
   img.onload = () => document.documentElement.classList.add('has-kain-photo');
   img.onerror = () => document.documentElement.classList.add('no-kain-photo');
-  img.src = 'assets/kain.jpg?v=1';
+  img.src = 'assets/gal/kain.webp?v=2';
 }
 probePhoto();
 
@@ -37,6 +38,7 @@ function boot(): void {
   initWorlds(isTouch);
   initGallery(isTouch);
   initContactReveal();
+  initIdleAnimations();
 
   if (!isDesktop) {
     const heroPhoto = document.querySelector('.hero-photo-wrap');

@@ -1,4 +1,4 @@
-import { gsap } from './motion';
+import { gsap, rafThrottle } from './motion';
 
 /**
  * Projects flow normally in the document (no pin, no crossfade-scale
@@ -36,13 +36,21 @@ export function initWorlds(isTouch: boolean): void {
     });
 
     if (!isTouch) {
-      w.addEventListener('mousemove', (e) => {
-        const r = w.getBoundingClientRect();
-        const dx = (e.clientX - r.left) / r.width - 0.5;
-        const dy = (e.clientY - r.top) / r.height - 0.5;
-        gsap.to(mockups, { rotateY: dx * 4, rotateX: -dy * 3, duration: 0.8, ease: 'power3.out' });
+      let rect: DOMRect | null = null;
+      w.addEventListener('mouseenter', () => {
+        rect = w.getBoundingClientRect();
       });
+      w.addEventListener(
+        'mousemove',
+        rafThrottle((e: MouseEvent) => {
+          const r = rect ?? w.getBoundingClientRect();
+          const dx = (e.clientX - r.left) / r.width - 0.5;
+          const dy = (e.clientY - r.top) / r.height - 0.5;
+          gsap.to(mockups, { rotateY: dx * 4, rotateX: -dy * 3, duration: 0.8, ease: 'power3.out' });
+        }) as EventListener
+      );
       w.addEventListener('mouseleave', () => {
+        rect = null;
         gsap.to(mockups, { rotateY: 0, rotateX: 0, duration: 0.8 });
       });
     }
