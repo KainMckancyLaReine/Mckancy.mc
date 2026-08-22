@@ -931,6 +931,19 @@ section { position: relative; z-index: 1; }
 .about-body p { font-size: 16px; line-height: 1.7; color: var(--ink-2); margin-bottom: 22px; }
 @media (min-width: 768px) { .about-body p { font-size: 17px; } }
 .about-body p strong { color: var(--ink); font-weight: 500; }
+
+/* ---------- Scroll-linked reading reveal ----------
+   Words start dimmed and fade up to their own inherited colour as the
+   paragraph scrolls past, so the text reads along with the visitor.
+   GSAP drives the opacity (see modules/readreveal.ts); the rule below is
+   only the resting state before its ScrollTrigger takes over, so the
+   first paint is dim rather than a flash of full-contrast text. */
+.read-reveal .rr-word { opacity: 0.2; }
+.read-reveal.rr-static .rr-word { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .read-reveal .rr-word { opacity: 1; }
+}
+
 .about-quote {
   font-family: 'Space Grotesk', sans-serif;
   font-size: clamp(22px, 2.4vw, 28px); line-height: 1.4;

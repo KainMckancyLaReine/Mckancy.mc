@@ -6,6 +6,7 @@ import { initPreloader } from './modules/preloader';
 import { initTransitionReveal } from './modules/transition';
 import { initTicker } from './modules/ticker';
 import { initAboutReveal } from './modules/about';
+import { initReadReveal } from './modules/readreveal';
 import { initSkillsReveal } from './modules/skills';
 import { initWorlds } from './modules/worlds';
 import { initGallery } from './modules/gallery';
@@ -22,7 +23,7 @@ function probePhoto(): void {
 probePhoto();
 
 function boot(): void {
-  const { isTouch, isDesktop } = readViewportFlags();
+  const { isTouch, isDesktop, reduceMotion } = readViewportFlags();
 
   initClock();
   initCursor(isTouch);
@@ -34,6 +35,7 @@ function boot(): void {
   initTicker();
   initTransitionReveal(isTouch);
   initAboutReveal(isDesktop, isTouch);
+  initReadReveal(reduceMotion);
   initSkillsReveal(isTouch);
   initWorlds(isTouch);
   initGallery(isTouch);
