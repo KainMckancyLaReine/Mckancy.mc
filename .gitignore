@@ -4,3 +4,9 @@ node_modules/
 node_modules/cache
 # Ignore the node_modules thats inside the react portfolio folder
 React-Portfolio/node_modules/
+
+# Vite build scratch output — the publish script copies the final
+# build into index.html + /build at the repo root, which IS committed
+# (GitHub Pages serves this branch's root directly).
+dist/
+.vite/
