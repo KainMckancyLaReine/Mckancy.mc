@@ -10,16 +10,28 @@ import { initReadReveal } from './modules/readreveal';
 import { initSkillsReveal } from './modules/skills';
 import { initWorlds } from './modules/worlds';
 import { initGallery } from './modules/gallery';
-import { initClock, initThemeToggle, initMobileDrawer, initSmoothAnchors } from './modules/nav';
+import {
+  initClock,
+  initThemeToggle,
+  initMobileDrawer,
+  initSmoothAnchors,
+  initNavContrast,
+} from './modules/nav';
 import { initLang } from './modules/lang';
 import { initContactForm, initContactReveal } from './modules/contact';
 import { initIdleAnimations } from './modules/idle';
+
+// Resolved through Vite rather than written as a bare string. The bare
+// path only ever happened to work from the published root — it 404s in
+// `vite dev` (which serves from app/), and in production it pulled a
+// second, unhashed copy of an image the page had already downloaded.
+const kainPhotoUrl = new URL('../assets/gal/kain.webp', import.meta.url).href;
 
 function probePhoto(): void {
   const img = new Image();
   img.onload = () => document.documentElement.classList.add('has-kain-photo');
   img.onerror = () => document.documentElement.classList.add('no-kain-photo');
-  img.src = 'assets/gal/kain.webp?v=2';
+  img.src = kainPhotoUrl;
 }
 probePhoto();
 
@@ -36,6 +48,7 @@ function boot(): void {
   initThemeToggle();
   initMobileDrawer();
   initSmoothAnchors();
+  initNavContrast();
   initContactForm();
 
   initTicker();

@@ -14,12 +14,17 @@ gsap.registerPlugin(ScrollTrigger);
  * keep a compositor layer alive for the whole session. That measured out
  * at roughly sixty extra permanent layers here.
  *
+ * It belongs in `gsap.config`, not `gsap.defaults`: `defaults` seeds the
+ * *vars* of every tween, so putting it there made GSAP treat `force3D` as
+ * a property to animate and log "Invalid property force3D set to auto"
+ * against every single tween on the page.
+ *
  * `lagSmoothing` stops GSAP from trying to "catch up" after a stall (a
  * long task, a tab regaining focus). Without it, one 500ms hitch makes
  * every timeline jump forward at once, which reads as a much worse
  * stutter than the hitch itself.
  */
-gsap.defaults({ force3D: 'auto' });
+gsap.config({ force3D: 'auto' });
 gsap.ticker.lagSmoothing(500, 33);
 
 ScrollTrigger.config({

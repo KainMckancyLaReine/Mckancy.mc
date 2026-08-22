@@ -1,4 +1,5 @@
 import { gsap, ScrollTrigger, rafThrottle } from './motion';
+import { LANG_EVENT } from './lang';
 
 /**
  * Chapter 03 — "The Craft Reel".
@@ -61,11 +62,14 @@ function initChips(): void {
  * Split the heading into per-character spans without touching its markup
  * structure (the italic <span> and the <br/> both survive), then fold
  * the characters in on entry.
+ *
+ * A language swap rewrites this heading's innerHTML wholesale, which
+ * throws away every `.cf-char`. Both the split and the entrance tween are
+ * therefore rebuildable, and a `kmlr:langchange` rebuilds them: without
+ * that the heading lost its split on the first switch and never got it
+ * back, in either language.
  */
-function initHeading(reduceMotion: boolean): void {
-  const heading = document.getElementById('craftHeading');
-  if (!heading) return;
-
+function splitHeadingChars(heading: HTMLElement): HTMLElement[] {
   const chars: HTMLElement[] = [];
   const walk = (node: Node): void => {
     [...node.childNodes].forEach((child) => {
@@ -91,36 +95,67 @@ function initHeading(reduceMotion: boolean): void {
     });
   };
   walk(heading);
+  return chars;
+}
 
-  if (chars.length === 0) return;
+function initHeading(reduceMotion: boolean): void {
+  const heading = document.getElementById('craftHeading');
+  if (!heading) return;
 
-  if (reduceMotion) {
-    gsap.from(heading, {
-      opacity: 0,
-      duration: 0.6,
-      scrollTrigger: { trigger: heading, start: 'top 88%', once: true },
-    });
-    return;
-  }
+  // Once the fold has played, a later swap must not replay it — copy that
+  // is already on screen suddenly folding in reads as a glitch.
+  let played = false;
+  let tween: gsap.core.Tween | null = null;
 
-  gsap.set(heading, { perspective: 800 });
-  gsap.from(chars, {
-    yPercent: 118,
-    rotateX: -82,
-    opacity: 0,
-    transformOrigin: '50% 100%',
-    duration: 0.85,
-    ease: 'expo.out',
-    stagger: { each: 0.022, from: 'start' },
-    scrollTrigger: { trigger: heading, start: 'top 86%', once: true },
-    // The fold plays exactly once. Stripping the transforms afterwards
-    // (and the parent's perspective with them) lets the browser release
-    // one compositor layer per character — two dozen of them here.
-    onComplete: () => {
+  const build = (): void => {
+    tween?.scrollTrigger?.kill();
+    tween?.kill();
+    tween = null;
+
+    const chars = splitHeadingChars(heading);
+    if (chars.length === 0) return;
+
+    if (reduceMotion) {
+      if (played) return;
+      tween = gsap.from(heading, {
+        opacity: 0,
+        duration: 0.6,
+        scrollTrigger: { trigger: heading, start: 'top 88%', once: true },
+        onComplete: () => {
+          played = true;
+        },
+      });
+      return;
+    }
+
+    if (played) {
       gsap.set(chars, { clearProps: 'all' });
-      gsap.set(heading, { clearProps: 'perspective' });
-    },
-  });
+      return;
+    }
+
+    gsap.set(heading, { perspective: 800 });
+    tween = gsap.from(chars, {
+      yPercent: 118,
+      rotateX: -82,
+      opacity: 0,
+      transformOrigin: '50% 100%',
+      duration: 0.85,
+      ease: 'expo.out',
+      stagger: { each: 0.022, from: 'start' },
+      scrollTrigger: { trigger: heading, start: 'top 86%', once: true },
+      // The fold plays exactly once. Stripping the transforms afterwards
+      // (and the parent's perspective with them) lets the browser release
+      // one compositor layer per character — two dozen of them here.
+      onComplete: () => {
+        played = true;
+        gsap.set(chars, { clearProps: 'all' });
+        gsap.set(heading, { clearProps: 'perspective' });
+      },
+    });
+  };
+
+  build();
+  window.addEventListener(LANG_EVENT, build);
 }
 
 /** Touch / narrow / reduced-motion: one soft stagger, no pin, no 3D. */

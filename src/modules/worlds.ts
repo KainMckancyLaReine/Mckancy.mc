@@ -215,16 +215,11 @@ export function initWorlds(isTouch: boolean): void {
     railItems[0].classList.add('is-on');
   }
 
-  // --- flip the fixed nav to light while this dark section is under it -
-  const section = document.getElementById('worlds');
-  if (section) {
-    ScrollTrigger.create({
-      trigger: section,
-      start: 'top 34px',
-      end: 'bottom 34px',
-      onToggle: (self) => document.body.classList.toggle('nav-on-dark', self.isActive),
-    });
-  }
+  // The nav's light-on-dark flip used to live here, which meant it was
+  // skipped by all three of this function's early returns — reduced
+  // motion in particular left a near-black nav sitting on the near-black
+  // work section. It is `initNavContrast` in `nav.ts` now, alongside the
+  // same problem in the contact section.
 
   // --- pointer-linked tilt on the frame -------------------------------
   if (isTouch) return;

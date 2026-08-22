@@ -4,7 +4,28 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#f4f3ef" />
-<title>Kain Mckancy La Reine — Creative Developer in Amsterdam</title>
+<title data-i18n="meta.title">Kain Mckancy La Reine — Creative Developer in Amsterdam</title>
+
+<!-- Theme, before first paint. Deferring this to the module bundle meant a
+     dark-mode visitor got a full white flash on every load. Keep the key
+     in step with THEME_KEY in src/modules/nav.ts. -->
+<script>
+  (function () {
+    try {
+      var saved = localStorage.getItem('kmlr-theme');
+      var dark = saved ? saved === 'dark'
+                       : window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (dark) {
+        document.documentElement.classList.add('theme-dark');
+        document.addEventListener('DOMContentLoaded', function () {
+          document.body.classList.add('dark');
+        });
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.content = '#0d0d0d';
+      }
+    } catch (e) { /* private mode — the page just starts light */ }
+  })();
+</script>
 <meta name="description" data-i18n-attr="content:meta.description" content="Portfolio of Kain Mckancy La Reine, a creative developer from Amsterdam building cinematic, motion-driven websites with React, GSAP and Three.js. See live client work: TuinToppersPro, Wildcore Retreats, KM.dev, TJEZ Photography and La Reine Coaching." />
 <meta name="author" content="Kain Mckancy La Reine" />
 <meta name="robots" content="index, follow" />
@@ -16,7 +37,7 @@
 <!-- Open Graph -->
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Kain Mckancy La Reine" />
-<meta property="og:title" content="Kain Mckancy La Reine — Creative Developer in Amsterdam" />
+<meta property="og:title" data-i18n-attr="content:meta.og.title" content="Kain Mckancy La Reine — Creative Developer in Amsterdam" />
 <meta property="og:description" data-i18n-attr="content:meta.og.description" content="Cinematic, motion-driven websites — built with React, GSAP and Three.js. Live client work for TuinToppersPro, Wildcore Retreats, KM.dev, TJEZ Photography and La Reine Coaching." />
 <meta property="og:url" content="https://kainmckancylareine.github.io/Mckancy.mc/" />
 <meta property="og:image" content="https://kainmckancylareine.github.io/Mckancy.mc/assets/kain.jpg" />
@@ -24,7 +45,7 @@
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Kain Mckancy La Reine — Creative Developer in Amsterdam" />
+<meta name="twitter:title" data-i18n-attr="content:meta.og.title" content="Kain Mckancy La Reine — Creative Developer in Amsterdam" />
 <meta name="twitter:description" data-i18n-attr="content:meta.og.description" content="Cinematic, motion-driven websites — built with React, GSAP and Three.js. Live client work for TuinToppersPro, Wildcore Retreats, KM.dev, TJEZ Photography and La Reine Coaching." />
 <meta name="twitter:image" content="https://kainmckancylareine.github.io/Mckancy.mc/assets/kain.jpg" />
 
@@ -119,15 +140,19 @@
         <span class="ls-slot" data-ls="en">EN</span>
         <span class="ls-scan"></span>
       </span>
-      <span class="sr-only" id="langSwitchState">English</span>
     </button>
-    <button class="theme-toggle" id="themeToggle" data-magnet data-i18n-attr="aria-label:nav.theme" aria-label="Toggle dark mode">
+    <!-- Lives outside the button on purpose: an aria-label on the button
+         overrides any text inside it, so this status was never announced
+         while it sat in there. As a sibling live region it is. -->
+    <span class="sr-only" id="langSwitchState" role="status" aria-live="polite">English</span>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" data-magnet data-i18n-attr="aria-label:nav.theme" aria-label="Toggle dark mode">
       <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
       <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
     </button>
     <div class="nav-time mono" id="navTime">— · —</div>
   </div>
-  <div class="nav-mobile-toggle" id="navToggle"><span></span><span></span></div>
+  <button class="nav-mobile-toggle" id="navToggle" type="button" aria-expanded="false"
+          aria-controls="mobileDrawer" data-i18n-attr="aria-label:nav.menu" aria-label="Open menu"><span></span><span></span></button>
 </nav>
 
 <div id="mobileDrawer">

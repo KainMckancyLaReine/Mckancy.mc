@@ -41,6 +41,19 @@ h1, h2, h3,
 
 /* ============ DARK MODE — swap palette ============ */
 body { transition: background-color .5s ease, color .5s ease; }
+
+/* Set by the inline head script before first paint, so the very first
+   frame a dark-mode visitor sees is already dark. `body.dark` lands a
+   moment later and takes over the full palette; this only has to own the
+   background the browser paints in the meantime — and it must not
+   transition, or the flash comes back as a fade. */
+html.theme-dark { background: #0d0d0d; }
+html.theme-dark body:not(.dark) {
+  background: #0d0d0d;
+  color: #f4f3ef;
+  transition: none;
+}
+
 body.dark {
   --paper:   #0d0d0d;
   --paper-2: #1a1a17;
@@ -420,8 +433,23 @@ nav#mainNav .nav-logo .dot { color: var(--ink-3); }
   nav#mainNav { padding: 18px 20px; }
   .nav-menu, .nav-time { display: none; }
 }
-.nav-mobile-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+/* A real <button>: it has to be reachable by keyboard and report its own
+   open/closed state, which a <div> never did. The reset below keeps it
+   looking exactly like the two bare bars it always was. */
+.nav-mobile-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 6px 2px;
+  margin: -6px -2px;
+  border: 0;
+  background: none;
+  color: inherit;
+  border-radius: 4px;
+}
 .nav-mobile-toggle span { width: 22px; height: 1px; background: var(--ink); }
+.nav-mobile-toggle:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; }
 @media (max-width: 880px) { .nav-mobile-toggle { display: flex; } }
 
 /* ============ HERO — clean, premium ============ */
@@ -783,7 +811,13 @@ section { position: relative; z-index: 1; }
   .section-pad { padding: 140px 48px; }
   .section-pad-lg { padding: 180px 48px; }
 }
-.container-x { max-width: 1440px; margin: 0 auto; }
+/* `width: 100%` is load-bearing, not belt-and-braces. #hero is a column
+   flex container, and an auto cross-axis margin on a flex item cancels
+   the default `stretch` — so `.hero-top` and `.hero-bottom` were shrinking
+   to their own content width and sitting centred, which is why the hero's
+   top rule read "PORTFOLIO 2026AMSTERDAM — NL" clumped in the middle
+   instead of pinned to the two edges by `space-between`. */
+.container-x { width: 100%; max-width: 1440px; margin: 0 auto; }
 
 .eyebrow {
   display: flex; align-items: center; gap: 14px;
@@ -1820,6 +1854,18 @@ body.nav-on-dark nav#mainNav {
 }
 #mobileDrawer.open { opacity: 1; pointer-events: auto; }
 #mobileDrawer a { color: var(--ink); font-family: 'Space Grotesk', sans-serif; font-size: 36px; text-decoration: none; }
+
+/* The drawer is a full-bleed overlay at z-index 8900 and the nav sits at
+   8000, so opening the menu buried the only control that could close it.
+   Lift the whole nav bar over the drawer while it is open: the hamburger
+   becomes a reachable X, and the language and theme controls stay usable
+   from inside the menu. */
+body.drawer-open nav#mainNav { z-index: 8950; }
+body.drawer-open { overflow: hidden; }
+
+.nav-mobile-toggle span { transition: transform .3s var(--km-ease); }
+.nav-mobile-toggle[aria-expanded='true'] span:first-child { transform: translateY(3px) rotate(45deg); }
+.nav-mobile-toggle[aria-expanded='true'] span:last-child  { transform: translateY(-3px) rotate(-45deg); }
 
 /* scrollbar */
 ::-webkit-scrollbar { width: 0; height: 0; }

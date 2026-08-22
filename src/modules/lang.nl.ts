@@ -13,6 +13,8 @@
  */
 export const NL: Record<string, string> = {
   /* ---- head ------------------------------------------------------- */
+  'meta.title': 'Kain Mckancy La Reine — Creative Developer uit Amsterdam',
+  'meta.og.title': 'Kain Mckancy La Reine — Creative Developer uit Amsterdam',
   'meta.description':
     'Portfolio van Kain Mckancy La Reine, creative developer uit Amsterdam die filmische, motion-gedreven websites bouwt met React, GSAP en Three.js. Bekijk live klantwerk: TuinToppersPro, Wildcore Retreats, KM.dev, TJEZ Photography en La Reine Coaching.',
   'meta.og.description':
@@ -29,6 +31,8 @@ export const NL: Record<string, string> = {
   'nav.gallery': 'Galerij',
   'nav.contact': 'Contact',
   'nav.theme': 'Donkere modus aan of uit',
+  'nav.menu': 'Menu openen',
+  'nav.menu.close': 'Menu sluiten',
   'lang.to.nl': 'Schakel over naar Nederlands',
   'lang.to.en': 'Switch to English',
 

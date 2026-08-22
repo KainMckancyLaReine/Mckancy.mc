@@ -64,20 +64,53 @@ export function initAboutReveal(isDesktop: boolean, isTouch: boolean): void {
   const aboutTitle = document.querySelector<HTMLElement>('.about-title');
   if (aboutTitle) splitAboutTitleIntoWords(aboutTitle);
 
-  // A language swap rewrites the title, which drops the mask spans the
-  // timeline below animates. Re-split and leave the new words at rest —
-  // replaying the entrance for copy already on screen would read as a glitch.
+  // The title's mask reveal is its own tween rather than a track inside
+  // `aboutTl`, because a language swap rewrites the title and destroys
+  // every `.aw-inner` the tween was driving. Keeping it separate means the
+  // swap can rebuild just this one thing.
+  let titlePlayed = false;
+  let titleTween: gsap.core.Tween | null = null;
+
+  const buildTitleReveal = (): void => {
+    titleTween?.scrollTrigger?.kill();
+    titleTween?.kill();
+    titleTween = null;
+
+    const words = gsap.utils.toArray<HTMLElement>('.about-title .aw-inner');
+    if (!words.length) return;
+
+    // Already seen: leave the new words standing. Replaying the entrance
+    // for copy that is on screen reads as a glitch.
+    if (titlePlayed) {
+      gsap.set(words, { yPercent: 0, opacity: 1 });
+      return;
+    }
+
+    titleTween = gsap.from(words, {
+      yPercent: 110,
+      opacity: 0,
+      duration: 1.1,
+      stagger: 0.06,
+      ease: 'expo.out',
+      scrollTrigger: { trigger: '#about', start: 'top 70%', once: true },
+      onComplete: () => {
+        titlePlayed = true;
+      },
+    });
+  };
+
+  buildTitleReveal();
+
   window.addEventListener(LANG_EVENT, () => {
     const title = document.querySelector<HTMLElement>('.about-title');
     if (!title) return;
     splitAboutTitleIntoWords(title);
-    gsap.set('.about-title .aw-inner', { yPercent: 0, opacity: 1 });
+    buildTitleReveal();
   });
 
   const aboutTl = gsap.timeline({
     scrollTrigger: { trigger: '#about', start: 'top 70%', toggleActions: 'play none none reverse' },
   });
-  aboutTl.from('.about-title .aw-inner', { yPercent: 110, opacity: 0, duration: 1.1, stagger: 0.06, ease: 'expo.out' });
   aboutTl.from('#about > .container-x > .eyebrow', { x: -20, opacity: 0, duration: 0.7, ease: 'power3.out' }, 0.1);
   aboutTl.from('.profile-card', { x: -40, y: 30, opacity: 0, duration: 1, ease: 'power3.out' }, 0.35);
   aboutTl.from(

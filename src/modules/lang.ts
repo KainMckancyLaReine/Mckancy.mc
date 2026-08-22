@@ -45,6 +45,7 @@ const EN_RUNTIME: Record<string, string> = {
   'form.subject.fallback': 'New idea',
   'lang.to.nl': 'Schakel over naar Nederlands',
   'lang.to.en': 'Switch to English',
+  'nav.menu.close': 'Close menu',
 };
 
 const EN: Record<string, string> = { ...EN_RUNTIME };
@@ -130,10 +131,23 @@ function write(lang: Lang): void {
  * One tween drives the whole thing, so there is exactly one `onComplete`
  * that writes the real text — see the note on `scrambleNumber` in
  * `worlds.ts` for why a chain of `delayedCall`s is not equivalent.
+ *
+ * The driver object is kept per element rather than created fresh each
+ * call. A fresh object has no tweens on it, so `killTweensOf` was a no-op
+ * and two fast clicks left two tweens writing to the same node — whichever
+ * finished last won, and a mid-flight glyph could be the thing left on
+ * screen. Reusing the object means the previous roll is genuinely killed.
  */
+const scrambleState = new WeakMap<HTMLElement, { p: number }>();
+
 function scramble(el: HTMLElement, final: string, duration: number, delay: number): void {
-  const state = { p: 0 };
+  let state = scrambleState.get(el);
+  if (!state) {
+    state = { p: 0 };
+    scrambleState.set(el, state);
+  }
   gsap.killTweensOf(state);
+  state.p = 0;
   gsap.to(state, {
     p: 1,
     duration,

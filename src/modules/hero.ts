@@ -1,8 +1,18 @@
 import { gsap } from './motion';
+import { LANG_EVENT } from './lang';
 
 export function initHeroEntrance(isTouch: boolean): void {
   const words = document.querySelectorAll<HTMLElement>('.hero-title .word');
-  gsap.from(words, { yPercent: 110, duration: 1.1, ease: 'expo.out', stagger: 0.05 });
+  const wordsIn = gsap.from(words, { yPercent: 110, duration: 1.1, ease: 'expo.out', stagger: 0.05 });
+
+  // Switching language while the entrance is still running replaces these
+  // spans mid-tween, leaving GSAP animating detached nodes and the new
+  // words wherever the stagger happened to leave the transform. Drop the
+  // tween and stand the new words up instead.
+  window.addEventListener(LANG_EVENT, () => {
+    wordsIn.kill();
+    gsap.set('.hero-title .word', { yPercent: 0, opacity: 1, clearProps: 'transform' });
+  });
   gsap.from('.hero-top span', { opacity: 0, y: -10, duration: 0.7, ease: 'power3.out', stagger: 0.08, delay: 0.2 });
   gsap.from('.hero-cta-row > *', { y: 24, opacity: 0, duration: 0.8, ease: 'power3.out', stagger: 0.08, delay: 0.55 });
   gsap.from('.hero-bottom > div', { y: 20, opacity: 0, duration: 0.8, ease: 'power3.out', stagger: 0.07, delay: 0.7 });
