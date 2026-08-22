@@ -1,22 +1,40 @@
 import { gsap, ScrollTrigger } from './motion';
 import { initHeroEntrance } from './hero';
 
+/**
+ * Release the scroll lock the inline head script put on. Kept as one
+ * function because every exit from the intro has to call it — the normal
+ * outro, the skip, and the no-preloader path — and a page that stays
+ * locked is unusable.
+ */
+function unlockScroll(): void {
+  document.documentElement.classList.remove('is-preloading');
+}
+
 export function initPreloader(isTouch: boolean): void {
   const preloaderEl = document.getElementById('preloader');
   const words = document.querySelectorAll<HTMLElement>('.pre-word');
   const nameWords = document.querySelectorAll<HTMLElement>('.pre-name .word');
   if (!preloaderEl) {
+    unlockScroll();
     initHeroEntrance(isTouch);
     return;
   }
 
-  document.body.style.overflow = 'hidden';
+  // The intro plays from the top. The browser restores the old offset on
+  // a refresh, and landing mid-page behind the curtain means the curtain
+  // lifts onto the middle of the site. A #hash is an intentional deep
+  // link and keeps its destination.
+  if (!location.hash) window.scrollTo(0, 0);
 
   gsap.to(nameWords, { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: 'expo.out', delay: 0.1 });
   gsap.from('.pre-meta', { opacity: 0, y: -6, duration: 0.5, stagger: 0.05, delay: 0.3 });
 
-  // Short by design — a portfolio shouldn't make people wait. Any
-  // interaction (click, key, scroll, touch) skips straight to the hero.
+  // Short by design — a portfolio shouldn't make people wait. A tap or a
+  // keypress skips straight to the hero. Scroll gestures deliberately do
+  // not: the page is locked while the intro is up, so a wheel or a swipe
+  // used to dismiss the curtain without moving anything, which read as
+  // the intro randomly cutting itself short.
   const totalDuration = 1400;
   const wordSlots = words.length;
   let currentWord = -1;
@@ -53,7 +71,7 @@ export function initPreloader(isTouch: boolean): void {
       defaults: { ease: 'expo.inOut' },
       onComplete: () => {
         preloaderEl!.style.display = 'none';
-        document.body.style.overflow = '';
+        unlockScroll();
         initHeroEntrance(isTouch);
       },
     });
@@ -63,7 +81,7 @@ export function initPreloader(isTouch: boolean): void {
     tl.to('#preloader', { yPercent: -100, duration: 0.8, ease: 'expo.inOut' }, 0.3);
   }
 
-  const skipEvents = ['pointerdown', 'keydown', 'wheel', 'touchstart'] as const;
+  const skipEvents = ['pointerdown', 'keydown'] as const;
   function skip() {
     finishOut();
   }

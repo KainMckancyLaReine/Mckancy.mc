@@ -298,6 +298,26 @@ html, body {
   overflow: hidden;
   color: var(--ink);
 }
+
+/* Scroll lock while the intro is on screen.
+ *
+ * It has to name `html` as well as `body`. `body { overflow: hidden }`
+ * only reaches the viewport when the root's own overflow is `visible`,
+ * and the responsive layer further down sets `html, body { overflow-x:
+ * hidden }` — which makes the root non-visible and quietly cancels that
+ * propagation. The old lock looked right and did nothing: a PageDown
+ * during the intro still scrolled the page 787px.
+ *
+ * `touch-action` is what stops a swipe on a phone and `overscroll-
+ * behavior` stops the rubber-band underneath it; `overflow: hidden`
+ * covers neither on iOS. */
+html.is-preloading,
+html.is-preloading body {
+  overflow: hidden;
+  touch-action: none;
+  overscroll-behavior: none;
+}
+
 .pre-stage {
   position: absolute; inset: 0;
   display: flex; flex-direction: column;
@@ -371,6 +391,25 @@ html, body {
 .pre-meta-tr { top: 28px; right: 28px; }
 .pre-meta-bl { bottom: 70px; left: 28px; }
 .pre-meta-br { bottom: 70px; right: 28px; }
+
+/* The four corner labels are absolutely positioned with no width of
+   their own, so on a narrow phone the left and right of a pair ran into
+   each other and read as one word — "LA REINEINDEX 2026 / PORTFOLIO".
+   Tighter type and a half-width cap keep each pair in its own corner. */
+@media (max-width: 640px) {
+  .pre-meta {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    gap: 6px;
+    max-width: calc(50% - 12px);
+  }
+  .pre-meta-tl, .pre-meta-bl { left: 16px; }
+  .pre-meta-tr, .pre-meta-br { right: 16px; }
+  .pre-meta-tr, .pre-meta-br { justify-content: flex-end; text-align: right; }
+  .pre-meta-tl, .pre-meta-tr { top: 20px; }
+  .pre-meta-bl, .pre-meta-br { bottom: 56px; }
+  .pre-meta .blink { flex: none; }
+}
 
 /* Counter */
 .pre-counter {

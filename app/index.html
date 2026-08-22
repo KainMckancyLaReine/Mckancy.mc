@@ -25,6 +25,39 @@
       }
     } catch (e) { /* private mode — the page just starts light */ }
   })();
+
+  /* Refresh always starts at the top, and nothing scrolls while the
+     preloader is up.
+
+     Both have to happen here rather than in the bundle. The browser
+     restores the old scroll offset before any module runs, so by the time
+     boot() executed you were already parked mid-page behind the
+     preloader; and the scroll lock has to be in force from the first
+     frame, not from whenever the JS finishes downloading. */
+  (function () {
+    try { history.scrollRestoration = 'manual'; } catch (e) { /* older browsers */ }
+
+    if (!document.getElementById || !document.querySelector) return;
+    var root = document.documentElement;
+    root.classList.add('is-preloading');
+
+    var unlock = function () { root.classList.remove('is-preloading'); };
+
+    /* Failsafe: if the bundle never runs — blocked script, network drop —
+       the page must not be left permanently unscrollable. */
+    setTimeout(unlock, 8000);
+
+    /* A #hash is someone deep-linking to a section on purpose, so that
+       one case still gets to land where it points. Everything else — a
+       plain load, a Cmd+R from halfway down — starts at the top. */
+    var toTop = function () { if (!location.hash) window.scrollTo(0, 0); };
+
+    window.addEventListener('DOMContentLoaded', function () {
+      if (!document.getElementById('preloader')) unlock();
+      toTop();
+    });
+    window.addEventListener('load', toTop);
+  })();
 </script>
 <meta name="description" data-i18n-attr="content:meta.description" content="Portfolio of Kain Mckancy La Reine, a creative developer from Amsterdam building cinematic, motion-driven websites with React, GSAP and Three.js. See live client work: TuinToppersPro, Wildcore Retreats, KM.dev, TJEZ Photography and La Reine Coaching." />
 <meta name="author" content="Kain Mckancy La Reine" />
