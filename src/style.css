@@ -33,9 +33,9 @@
    elegant 400-weight italic doesn't translate, so every large heading
    gets a confident 600 by default. */
 h1, h2, h3,
-.hero-title, .trans-h, .section-title, .world-title, .about-title,
+.hero-title, .trans-h, .section-title, .pw-title, .about-title,
 .contact-title, .km-founder-title, .cf-title, .pre-name,
-.playa-cap-title, .gallery-card .gc-title {
+.pw-cap-t, .gallery-card .gc-title {
   font-weight: 600;
 }
 
@@ -57,191 +57,7 @@ body.dark {
 body.dark .glass { background: rgba(244,243,238,0.04); border-color: rgba(244,243,238,0.12); }
 body.dark .photo-plate { box-shadow: 0 40px 80px -30px rgba(0,0,0,0.7), 0 14px 30px -16px rgba(0,0,0,0.4); }
 body.dark .ticker { background: var(--paper-2); }
-body.dark .mockup { box-shadow: 0 30px 80px -30px rgba(0,0,0,0.65); }
-body.dark .world[data-world="2"] {
-  background: var(--paper-2);
-  color: var(--ink);
-}
-body.dark .world[data-world="2"] .world-title { color: var(--ink); }
-body.dark .world[data-world="2"] .world-copy  { color: var(--ink-2); }
-body.dark .world[data-world="2"] .world-meta  { color: var(--ink-3); }
 body.dark #preloader { background: var(--paper); color: var(--ink); }
-
-/* ============ PLAYA — Clickable browser-window mockup ============
-   The whole card is an <a>. Every child has pointer-events:none
-   so nothing can intercept the click — anywhere on the card opens
-   playabootverhuur.nl in a new tab.                                */
-.playa-card {
-  display: block;
-  text-decoration: none;
-  color: inherit;
-  cursor: pointer;
-  background: #0c1521;
-  border-radius: var(--radius-md);
-  transition: transform .45s cubic-bezier(.2,.7,.2,1),
-              box-shadow .45s ease,
-              border-color .3s ease;
-}
-/* Promoted only while the hover transition can actually run — eight of
-   these held a compositor layer each for the whole session otherwise. */
-.playa-card:hover { will-change: transform; }
-.playa-card-dark { background: #050505; }
-.playa-card > * { pointer-events: none; }
-.playa-card:hover {
-  transform: translateY(-4px) scale(1.01);
-  box-shadow: 0 50px 100px -30px rgba(10,10,10,0.55),
-              0 20px 40px -20px rgba(198,255,74,0.18);
-  border-color: rgba(198,255,74,0.45);
-}
-body.dark .playa-card:hover {
-  box-shadow: 0 50px 100px -30px rgba(0,0,0,0.85),
-              0 20px 40px -20px rgba(198,255,74,0.25);
-}
-
-/* Browser chrome */
-.playa-chrome {
-  position: absolute; top: 0; left: 0; right: 0;
-  height: 30px;
-  display: flex; align-items: center; gap: 10px;
-  padding: 0 12px;
-  background: linear-gradient(180deg, #1d2230 0%, #161b27 100%);
-  border-bottom: 1px solid rgba(244,243,238,0.07);
-  z-index: 2;
-  border-top-left-radius: var(--radius-md);
-  border-top-right-radius: var(--radius-md);
-}
-.playa-chrome.chrome-dark {
-  background: linear-gradient(180deg, #15140f 0%, #0d0c08 100%);
-  border-bottom-color: rgba(244,243,238,0.06);
-  height: 26px;
-  padding: 0 10px;
-  gap: 8px;
-}
-
-.playa-dots { display: flex; gap: 5px; flex-shrink: 0; }
-.playa-dots span {
-  width: 9px; height: 9px; border-radius: 50%;
-  background: #ff5f57;
-  display: inline-block;
-}
-.chrome-dark .playa-dots span { width: 7px; height: 7px; }
-.playa-dots span:nth-child(2) { background: #ffbd2e; }
-.playa-dots span:nth-child(3) { background: #28c93f; }
-
-.playa-url {
-  flex: 1; min-width: 0;
-  max-width: 360px;
-  margin: 0 8px;
-  padding: 4px 11px;
-  background: rgba(244,243,238,0.08);
-  border: 1px solid rgba(244,243,238,0.10);
-  border-radius: 100px;
-  display: flex; align-items: center; gap: 6px;
-  font-family: 'Inter', sans-serif;
-  font-size: 9px;
-  letter-spacing: 0.04em;
-  color: #f4f3ee;
-  overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
-}
-.chrome-dark .playa-url {
-  font-size: 7.5px;
-  padding: 3px 9px;
-  max-width: 70%;
-}
-.playa-url .lock { flex-shrink: 0; opacity: 0.7; color: #5fbf5f; }
-.playa-url .dim { opacity: 0.55; }
-.playa-url-text { overflow: hidden; text-overflow: ellipsis; }
-
-.playa-live {
-  display: flex; align-items: center; gap: 5px;
-  font-family: 'Inter', sans-serif;
-  font-size: 7.5px; letter-spacing: 0.22em; text-transform: uppercase;
-  color: rgba(244,243,238,0.78);
-  flex-shrink: 0;
-}
-.playa-live .dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: #5fbf5f;
-  box-shadow: 0 0 6px #5fbf5f;
-  animation: playaLivePulse 1.6s ease-in-out infinite;
-}
-.playa-live .dot-orange { background: var(--orange); box-shadow: 0 0 6px var(--orange); }
-.chrome-dark .playa-live { font-size: 7px; }
-@keyframes playaLivePulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.45; transform: scale(0.85); }
-}
-
-/* Screenshot body */
-.playa-body {
-  position: absolute;
-  top: 30px; left: 0; right: 0; bottom: 0;
-  background-size: cover;
-  background-repeat: no-repeat;
-}
-.playa-card-dark .playa-body { top: 26px; }
-
-/* Bottom caption that floats above the screenshot */
-.playa-caption {
-  position: absolute;
-  bottom: 14px; left: 14px;
-  z-index: 3;
-  padding: 8px 12px;
-  background: rgba(10,15,25,0.82);
-  border: 1px solid rgba(244,243,238,0.14);
-  border-radius: 8px;
-  transition: opacity .35s, transform .35s;
-}
-.caption-dark {
-  bottom: 10px; left: 10px;
-  padding: 6px 10px;
-  background: rgba(0,0,0,0.65);
-}
-.playa-cap-meta {
-  font-family: 'Inter', sans-serif;
-  font-size: 8px; letter-spacing: 0.25em; text-transform: uppercase;
-  color: rgba(244,243,238,0.65);
-  margin-bottom: 2px;
-}
-.caption-dark .playa-cap-meta { font-size: 7px; }
-.playa-cap-title {
-  font-family: 'Space Grotesk', sans-serif;
-  font-weight: 600;
-  font-size: 16px;
-  color: #f4f3ee;
-  line-height: 1;
-}
-.caption-dark .playa-cap-title { font-size: 13px; }
-
-/* Hover CTA pill — appears on hover */
-.playa-cta {
-  position: absolute;
-  bottom: 14px; right: 14px;
-  z-index: 4;
-  display: inline-flex; align-items: center;
-  padding: 8px 14px;
-  background: var(--orange);
-  color: #fff;
-  font-family: 'Inter', sans-serif;
-  font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
-  border-radius: 100px;
-  box-shadow: 0 8px 22px -8px rgba(198,255,74,0.55);
-  opacity: 0; transform: translateY(8px);
-  transition: opacity .35s ease, transform .35s ease;
-}
-.playa-card-dark .playa-cta {
-  bottom: 10px; right: 10px;
-  padding: 6px 10px;
-  font-size: 7.5px;
-}
-.playa-card:hover .playa-cta { opacity: 1; transform: translateY(0); }
-.playa-card:hover .playa-caption { opacity: 0; transform: translateY(8px); }
-
-/* Mobile — caption stays visible (no hover) */
-@media (hover: none), (pointer: coarse) {
-  .playa-cta { opacity: 1; transform: translateY(0); }
-  .playa-card:hover .playa-caption { opacity: 1; transform: none; }
-}
 
 /* ============ DARK-MODE TEXT CONTRAST FIXES ============
    Several sections were styled with hard-coded paper-toned text
@@ -269,13 +85,6 @@ body.dark .contact-form-card {
 body.dark .footer {
   border-top-color: rgba(10,10,10,0.15);
   color: rgba(10,10,10,0.55);
-}
-
-/* World 2 tag chips were light-on-light in dark mode */
-body.dark .world[data-world="2"] .world-tags span {
-  color: rgba(10,10,10,0.7);
-  border-color: rgba(10,10,10,0.18);
-  background: rgba(10,10,10,0.04);
 }
 
 /* Dark-mode toggle button */
@@ -1179,7 +988,7 @@ body.dark .craft-frame { box-shadow: 0 30px 70px -34px rgba(0,0,0,0.75); }
 .cf-meter i b { display: block; height: 100%; width: var(--w); background: var(--orange); border-radius: 100px; }
 .cf-meter-v { text-align: right; color: var(--ink); }
 .cf-deployed { display: flex; align-items: center; gap: 7px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-2); margin-top: 4px; }
-.cf-deployed .d { width: 6px; height: 6px; border-radius: 50%; background: #5fbf5f; box-shadow: 0 0 7px #5fbf5f; animation: playaLivePulse 1.6s ease-in-out infinite; }
+.cf-deployed .d { width: 6px; height: 6px; border-radius: 50%; background: #5fbf5f; box-shadow: 0 0 7px #5fbf5f; animation: pwPulse 1.6s ease-in-out infinite; }
 
 /* --- counter + shutter ------------------------------------------ */
 .craft-counter { display: none; }
@@ -1272,46 +1081,508 @@ body.dark .craft-frame { box-shadow: 0 30px 70px -34px rgba(0,0,0,0.75); }
 }
 body.dark .skill-chip { background: rgba(244,243,238,0.04); }
 
-/* ============ WORLDS / PROJECTS — flowing grid, no pin ============ */
-#worlds { position: relative; background: var(--paper); }
-.projects-list { margin-top: 20px; }
-.world { position: relative; padding: 64px 0; }
-.world + .world { border-top: 1px solid var(--line); }
-.world-grid { display: grid; grid-template-columns: 1fr; gap: 32px; width: 100%; align-items: center; }
-@media (min-width: 1024px) {
-  .world-grid { grid-template-columns: 5fr 7fr; gap: 64px; }
-  .world-grid.rev > :first-child { order: 2; }
-  .world-grid.rev > :last-child { order: 1; }
-}
-.world-meta { font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 16px; }
-.world-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(36px, 5.5vw, 68px); line-height: 0.98; letter-spacing: -0.02em; color: var(--ink); }
-.world-copy { color: var(--ink-2); font-size: 16px; line-height: 1.6; max-width: 440px; margin-top: 20px; }
-.world-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 24px; }
-.world-tags span { padding: 6px 12px; border: 1px solid var(--line); font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-2); background: rgba(255,255,255,0.4); border-radius: 100px; }
-.world-stage { position: relative; height: clamp(260px, 40vw, 420px); }
-.mockup {
-  position: absolute; border: 1px solid var(--line); background: var(--paper);
-  overflow: hidden; box-shadow: 0 30px 80px -30px rgba(10,10,10,0.25);
-  transition: transform .4s cubic-bezier(.2,.7,.2,1);
-  animation: mockupFloat 7s ease-in-out infinite;
-  border-radius: var(--radius-md);
-}
-/* Antigravity idle drift — uses the independent `translate` property so
-   it never fights the GSAP-driven `transform` (tilt) on the same element. */
-@keyframes mockupFloat {
-  0%, 100% { translate: 0 0; }
-  50% { translate: 0 -7px; }
-}
-@media (prefers-reduced-motion: reduce) { .mockup { animation: none; } }
+/* ============ SELECTED WORK — sticky stack, one screen per project ============
+   The section is its own screening room: always near-black, whatever the
+   page theme, so five very differently-coloured screenshots read as one
+   set. Each project is a full-viewport sticky card; the next card scrolls
+   up over the previous one, which scales back and dims so its top edge
+   peeks out — the stack literally builds itself as you scroll.
 
-/* NEXA — boxed dark card for visual rhythm */
-.world[data-world="2"] { background: var(--ink); color: var(--paper); padding: 56px 32px; }
-@media (min-width: 768px) { .world[data-world="2"] { padding: 64px 48px; } }
-.world[data-world="2"] .world-meta { color: rgba(244,243,238,0.55); }
-.world[data-world="2"] .world-title { color: var(--paper); }
-.world[data-world="2"] .world-copy { color: rgba(244,243,238,0.7); }
-.world[data-world="2"] .world-tags span { color: rgba(244,243,238,0.7); border-color: rgba(244,243,238,0.18); background: rgba(244,243,238,0.05); }
-.world[data-world="2"] .mockup { border-color: rgba(244,243,238,0.15); box-shadow: 0 30px 80px -30px rgba(0,0,0,0.6); }
+   Every card carries its own accent in `--pa` (sampled from its
+   screenshot) which drives the index number, the italic title line, the
+   live dot, the tag dots, the aura and the CTA fill. One variable, six
+   places — swap the hex on the <article> and the whole card re-tunes.  */
+
+#worlds {
+  position: relative;
+  padding-bottom: clamp(60px, 10vh, 140px);
+  /* No overflow/contain anywhere on this section or .pw-stack — either
+     one silently turns the sticky cards back into static blocks. */
+  background: #080908;
+  color: #f4f3ee;
+  isolation: isolate;
+}
+#worlds::before {
+  content: '';
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(120% 60% at 50% 0%, rgba(244, 243, 238, 0.07) 0%, transparent 60%),
+    linear-gradient(180deg, #0d0e0d 0%, #080908 22%, #080908 78%, #0c0d0c 100%);
+}
+
+/* The section is dark in both themes, so the fixed nav — which paints in
+   `--ink` — would sit invisible on top of it in light mode. Rebinding the
+   three tokens on the nav itself flips the logo, links, clock, burger and
+   theme toggle in one rule instead of five overrides. */
+body.nav-on-dark nav#mainNav {
+  --ink: #f4f3ee;
+  --ink-3: rgba(244, 243, 238, 0.55);
+  --line: rgba(244, 243, 238, 0.22);
+  --paper: #0d0d0d;
+}
+
+/* ---- section header ------------------------------------------------ */
+.pw-head {
+  position: relative; z-index: 1;
+  padding: clamp(96px, 13vh, 168px) clamp(20px, 3vw, 44px) clamp(44px, 7vh, 92px);
+}
+#worlds .eyebrow { color: rgba(244, 243, 238, 0.5); }
+#worlds .eyebrow::before { background: rgba(244, 243, 238, 0.4); }
+#worlds .section-title { color: #f4f3ee; }
+#worlds .section-title .it { color: var(--orange); }
+#worlds .section-lede { color: rgba(244, 243, 238, 0.58); }
+
+.pw-hint {
+  display: flex; align-items: center; gap: 12px;
+  margin-top: clamp(28px, 4vh, 48px);
+  font-family: 'Inter', sans-serif;
+  font-size: 9.5px; letter-spacing: 0.28em; text-transform: uppercase;
+  color: rgba(244, 243, 238, 0.34);
+}
+.pw-hint-rail {
+  position: relative; display: block;
+  width: 42px; height: 1px; overflow: hidden;
+  background: rgba(244, 243, 238, 0.16);
+}
+.pw-hint-rail i {
+  position: absolute; inset: 0 auto 0 0; width: 40%;
+  background: var(--orange);
+  animation: pwHint 2.4s var(--km-ease) infinite;
+}
+@keyframes pwHint {
+  0%   { transform: translateX(-110%); }
+  60%  { transform: translateX(260%); }
+  100% { transform: translateX(260%); }
+}
+
+/* ---- the stack ------------------------------------------------------ */
+.pw-stack { position: relative; z-index: 1; }
+.pw-tail  { height: clamp(40px, 8vh, 110px); }
+
+.pw-item {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 clamp(16px, 3vw, 44px);
+  perspective: 1800px;
+}
+
+.pw-card {
+  position: relative;
+  width: 100%; max-width: 1420px;
+  height: min(85svh, 880px);
+  border-radius: clamp(20px, 2vw, 34px);
+  overflow: hidden;
+  background: #0e0f0e;
+  border: 1px solid rgba(244, 243, 238, 0.10);
+  box-shadow:
+    0 -1px 0 rgba(244, 243, 238, 0.10) inset,
+    0 60px 120px -50px rgba(0, 0, 0, 0.95),
+    0 24px 60px -40px rgba(0, 0, 0, 0.8);
+  transform-origin: 50% 0%;
+  will-change: transform;
+}
+/* Film grain, so five flat screenshots share one surface. */
+.pw-card::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 7;
+  opacity: 0.05; mix-blend-mode: overlay; border-radius: inherit;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/></svg>");
+}
+
+/* Accent wash bleeding out from behind the screenshot. */
+.pw-aura {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(58% 62% at 76% 26%, var(--pa) 0%, transparent 62%),
+    radial-gradient(46% 50% at 6% 96%, var(--pa) 0%, transparent 66%);
+  opacity: 0.13;
+}
+.pw-edge {
+  position: absolute; inset: 0; z-index: 6; pointer-events: none;
+  border-radius: inherit;
+  border: 1px solid var(--pa);
+  opacity: 0.16;
+}
+/* Dimmer that fades up as the next card slides over this one. */
+.pw-veil {
+  position: absolute; inset: 0; z-index: 8; pointer-events: none;
+  border-radius: inherit;
+  background: #050605;
+  opacity: 0;
+}
+
+.pw-inner {
+  position: relative; z-index: 3;
+  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 41fr) minmax(0, 59fr);
+  align-items: center;
+  gap: clamp(24px, 3.4vw, 64px);
+  padding: clamp(24px, 3.2vw, 54px);
+}
+
+/* ---- copy column ---------------------------------------------------- */
+.pw-copy { min-width: 0; }
+
+.pw-idx {
+  display: flex; align-items: baseline; gap: 12px;
+  margin-bottom: clamp(14px, 2.2vh, 26px);
+}
+.pw-idx-n {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: clamp(38px, 4vw, 60px);
+  line-height: 0.86;
+  letter-spacing: -0.045em;
+  color: var(--pa);
+  font-variant-numeric: tabular-nums;
+}
+.pw-idx-r,
+.pw-idx-y {
+  font-family: 'Inter', sans-serif;
+  font-size: 9.5px; letter-spacing: 0.26em; text-transform: uppercase;
+  color: rgba(244, 243, 238, 0.34);
+}
+.pw-idx-y { margin-left: auto; }
+
+.pw-kicker {
+  margin: 0 0 clamp(10px, 1.6vh, 18px);
+  font-family: 'Inter', sans-serif;
+  font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: rgba(244, 243, 238, 0.5);
+}
+
+.pw-title {
+  margin: 0 0 clamp(14px, 2.2vh, 24px);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(34px, 4.1vw, 60px);
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  color: #f6f5f0;
+}
+/* Each line is its own overflow mask so the reveal can push type up
+   from underneath instead of fading it in. */
+.pw-l { display: block; overflow: hidden; padding-bottom: 0.04em; }
+.pw-l > span { display: block; }
+.pw-title .it { color: var(--pa); }
+
+.pw-lede {
+  margin: 0;
+  max-width: 46ch;
+  font-size: clamp(14px, 1.05vw, 16px);
+  line-height: 1.62;
+  color: rgba(244, 243, 238, 0.62);
+}
+
+.pw-tags {
+  display: flex; flex-wrap: wrap; gap: 7px;
+  list-style: none; margin: clamp(16px, 2.4vh, 26px) 0 0; padding: 0;
+}
+.pw-tags li {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 6px 13px 6px 11px;
+  border: 1px solid rgba(244, 243, 238, 0.14);
+  border-radius: 100px;
+  background: rgba(244, 243, 238, 0.03);
+  font-family: 'Inter', sans-serif;
+  font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: rgba(244, 243, 238, 0.66);
+}
+.pw-tags li::before {
+  content: ''; width: 4px; height: 4px; border-radius: 50%;
+  background: var(--pa); opacity: 0.85;
+}
+
+.pw-cta {
+  position: relative; overflow: hidden;
+  display: inline-flex; align-items: center; gap: 12px;
+  margin-top: clamp(20px, 3vh, 34px);
+  padding: 13px 20px 13px 22px;
+  border: 1px solid rgba(244, 243, 238, 0.2);
+  border-radius: 100px;
+  text-decoration: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: #f4f3ee;
+  transition: color 0.4s ease, border-color 0.4s ease;
+}
+/* Accent wipes up from the bottom edge, text flips to ink on top of it. */
+.pw-cta-r {
+  position: absolute; inset: 0; z-index: 0;
+  border-radius: inherit;
+  background: var(--pa);
+  transform: translateY(101%);
+  transition: transform 0.55s var(--km-ease);
+}
+.pw-cta-t, .pw-cta-a { position: relative; z-index: 1; }
+.pw-cta-a { font-style: normal; transition: transform 0.45s var(--km-ease); }
+.pw-cta:hover { color: #0a0b0a; border-color: var(--pa); }
+.pw-cta:hover .pw-cta-r { transform: translateY(0); }
+.pw-cta:hover .pw-cta-a { transform: translate(3px, -3px); }
+
+/* ---- visual column -------------------------------------------------- */
+.pw-visual { position: relative; min-width: 0; }
+
+.pw-frame {
+  position: relative; display: block;
+  border-radius: clamp(12px, 1.1vw, 18px);
+  overflow: hidden;
+  background: #0a0b0a;
+  border: 1px solid rgba(244, 243, 238, 0.13);
+  box-shadow:
+    0 40px 90px -40px rgba(0, 0, 0, 0.95),
+    0 10px 26px -18px rgba(0, 0, 0, 0.7);
+  text-decoration: none; color: inherit;
+  transition: box-shadow 0.5s ease, border-color 0.5s ease;
+  transform-style: preserve-3d;
+}
+/* Nothing inside may swallow the click — the whole frame is the link. */
+.pw-frame > * { pointer-events: none; }
+.pw-frame:hover {
+  border-color: color-mix(in srgb, var(--pa) 55%, transparent);
+  box-shadow:
+    0 50px 110px -40px rgba(0, 0, 0, 1),
+    0 0 0 1px rgba(244, 243, 238, 0.06),
+    0 24px 60px -30px var(--pa);
+}
+@supports not (color: color-mix(in srgb, red 50%, blue)) {
+  .pw-frame:hover { border-color: rgba(244, 243, 238, 0.34); }
+}
+
+.pw-chrome {
+  position: relative; z-index: 2;
+  height: clamp(28px, 2.6vw, 36px);
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 clamp(9px, 0.9vw, 14px);
+  background: linear-gradient(180deg, rgba(244, 243, 238, 0.10) 0%, rgba(244, 243, 238, 0.045) 100%);
+  border-bottom: 1px solid rgba(244, 243, 238, 0.08);
+}
+.pw-dots { display: flex; gap: 5px; flex-shrink: 0; }
+.pw-dots i {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: rgba(244, 243, 238, 0.22);
+}
+.pw-dots i:first-child { background: rgba(244, 243, 238, 0.34); }
+
+.pw-url {
+  flex: 1; min-width: 0; max-width: 340px;
+  display: flex; align-items: center; gap: 6px;
+  margin: 0 auto;
+  padding: 4px 12px;
+  border-radius: 100px;
+  background: rgba(10, 11, 10, 0.55);
+  border: 1px solid rgba(244, 243, 238, 0.09);
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(7.5px, 0.62vw, 9px);
+  letter-spacing: 0.03em;
+  color: rgba(244, 243, 238, 0.9);
+  white-space: nowrap; overflow: hidden;
+}
+.pw-url .pw-lock { flex-shrink: 0; color: var(--pa); opacity: 0.8; }
+.pw-url-t { overflow: hidden; text-overflow: ellipsis; }
+.pw-url-t i { font-style: normal; opacity: 0.45; }
+
+.pw-status {
+  flex-shrink: 0;
+  display: flex; align-items: center; gap: 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: 7.5px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: rgba(244, 243, 238, 0.6);
+}
+.pw-live {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--pa);
+  box-shadow: 0 0 8px var(--pa);
+  animation: pwPulse 1.8s ease-in-out infinite;
+}
+@keyframes pwPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.4; transform: scale(0.78); }
+}
+
+/* The screenshot itself. `--ar` is the photo's own ratio, so no project
+   is ever cropped to fit a shared box — wide shots simply sit shorter. */
+.pw-shot {
+  position: relative;
+  /* 5% shorter than the screenshot's own ratio. `object-fit: cover` then
+     trims 2.5% off the top and bottom instead of the sides — which is the
+     whole point: the parallax needs headroom to travel, and cropping the
+     sides would eat the client's logo and nav out of every shot. */
+  aspect-ratio: calc(var(--ar, 1.6) * 1.05);
+  overflow: hidden;
+  background: #0a0b0a;
+  /* Reveal wipes this open from the top; JS animates the inset. */
+  clip-path: inset(0 0 0 0);
+}
+.pw-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center center;
+  display: block;
+}
+/* Diagonal light sweep on hover — reads as glass over the screen. */
+.pw-sheen {
+  position: absolute; top: -60%; bottom: -60%; left: -30%; width: 28%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.16), transparent);
+  transform: translateX(-260%) rotate(14deg);
+  transition: transform 0.9s var(--km-ease);
+  pointer-events: none;
+}
+.pw-frame:hover .pw-sheen { transform: translateX(560%) rotate(14deg); }
+/* Single accent scanline that rides down once as the shot is revealed. */
+.pw-scan {
+  position: absolute; left: 0; right: 0; top: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--pa), transparent);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pw-open {
+  position: absolute; z-index: 3;
+  right: clamp(10px, 1vw, 16px); bottom: clamp(10px, 1vw, 16px);
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 15px;
+  border-radius: 100px;
+  background: var(--pa);
+  color: #0a0b0a;
+  font-family: 'Inter', sans-serif;
+  font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+  box-shadow: 0 12px 30px -12px var(--pa);
+  opacity: 0; transform: translateY(10px) scale(0.96);
+  transition: opacity 0.4s ease, transform 0.5s var(--km-ease);
+}
+.pw-open-a { font-style: normal; }
+.pw-frame:hover .pw-open { opacity: 1; transform: translateY(0) scale(1); }
+
+/* Caption straddles the bottom-left corner of the frame. */
+.pw-caption {
+  position: absolute; z-index: 4; pointer-events: none;
+  left: clamp(-16px, -1.1vw, -8px);
+  bottom: clamp(-18px, -1.3vw, -10px);
+  display: flex; flex-direction: column; gap: 3px;
+  padding: 10px 15px;
+  border-radius: 12px;
+  background: rgba(8, 9, 8, 0.82);
+  border: 1px solid rgba(244, 243, 238, 0.12);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: opacity 0.4s ease, transform 0.5s var(--km-ease);
+}
+.pw-cap-k {
+  font-family: 'Inter', sans-serif;
+  font-size: 7.5px; letter-spacing: 0.26em; text-transform: uppercase;
+  color: rgba(244, 243, 238, 0.5);
+}
+.pw-cap-t {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: clamp(13px, 1.15vw, 17px);
+  line-height: 1;
+  color: #f6f5f0;
+}
+.pw-cap-t em { font-style: normal; color: var(--pa); }
+
+/* ---- progress scrubber, pinned to the bottom of the stack ----------- */
+/* Fixed rather than sticky: a zero-height sticky box is not reliably
+   pinned by every engine, and this has to survive the whole stack. It is
+   hidden until the stack owns the viewport, and stops short of the
+   floating contact button on the right. */
+.pw-rail {
+  position: fixed; z-index: 30;
+  left: clamp(24px, 4vw, 60px);
+  right: clamp(92px, 8vw, 130px);
+  bottom: 22px;
+  display: flex; flex-direction: column; gap: 11px;
+  pointer-events: none;
+  opacity: 0; visibility: hidden;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease, transform 0.6s var(--km-ease), visibility 0.5s;
+}
+.pw-rail.is-live { opacity: 1; visibility: visible; transform: none; }
+.pw-rail-in { display: flex; flex-direction: column; gap: 11px; width: 100%; }
+.pw-rail-track {
+  position: relative; height: 1px;
+  background: rgba(244, 243, 238, 0.14);
+}
+.pw-rail-fill {
+  position: absolute; top: -0.5px; left: 0; height: 2px; width: 0%;
+  background: var(--pa-on, var(--orange));
+  box-shadow: 0 0 12px var(--pa-on, var(--orange));
+  transition: background 0.6s ease, box-shadow 0.6s ease;
+}
+.pw-rail-list {
+  display: flex; justify-content: space-between;
+  list-style: none; margin: 0; padding: 0;
+}
+.pw-rail-list li {
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 8.5px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: rgba(244, 243, 238, 0.3);
+  transition: color 0.45s ease;
+}
+.pw-rail-list li b {
+  font-family: 'Space Grotesk', sans-serif; font-weight: 600;
+  font-size: 10px; letter-spacing: 0;
+}
+.pw-rail-list li span {
+  max-width: 0; overflow: hidden; white-space: nowrap; opacity: 0;
+  transition: max-width 0.7s var(--km-ease), opacity 0.4s ease;
+}
+.pw-rail-list li.is-on { color: var(--pa); }
+.pw-rail-list li.is-on span { max-width: 220px; opacity: 1; }
+
+/* ---- ≤1023px: the stack unstacks into a plain, readable column ------ */
+@media (max-width: 1023px) {
+  .pw-head { padding: clamp(80px, 11vh, 130px) 20px 40px; }
+  .pw-rail { display: none; }
+  .pw-tail { height: 24px; }
+
+  .pw-item {
+    position: static;
+    height: auto;
+    display: block;
+    padding: 0 16px 18px;
+    perspective: none;
+  }
+  .pw-card {
+    height: auto;
+    max-width: 640px; margin: 0 auto;
+    /* No stacking on touch, so nothing should be dimmed or scaled. */
+    transform: none !important;
+  }
+  .pw-veil { display: none; }
+  .pw-inner {
+    grid-template-columns: 1fr;
+    gap: 26px;
+    padding: 26px 20px 30px;
+  }
+  .pw-idx-n { font-size: clamp(32px, 9vw, 46px); }
+  .pw-title { font-size: clamp(32px, 9.5vw, 50px); }
+  .pw-lede { font-size: 15px; }
+  .pw-caption { left: -6px; bottom: -12px; }
+  .pw-open { opacity: 1; transform: none; }
+}
+
+@media (max-width: 560px) {
+  .pw-idx-y { display: none; }
+  .pw-cap-t { font-size: 13px; }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .pw-open { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pw-hint-rail i { animation: none; }
+  .pw-live { animation: none; }
+  .pw-item { position: static; height: auto; padding-bottom: 26px; }
+  .pw-card { height: auto; transform: none !important; }
+  .pw-veil { display: none; }
+  .pw-rail { display: none; }
+}
 
 /* ============ GALLERY — visual grid, no tornado ============ */
 #gallery-section { position: relative; background: var(--paper-2); }
@@ -1360,7 +1631,7 @@ body.dark .skill-chip { background: rgba(244,243,238,0.04); }
   background: rgba(10,15,25,0.82);
   border: 1px solid rgba(244,243,238,0.18);
 }
-.gallery-card .gc-live .d { width: 5px; height: 5px; border-radius: 50%; background: #5fbf5f; box-shadow: 0 0 6px #5fbf5f; animation: playaLivePulse 1.6s ease-in-out infinite; }
+.gallery-card .gc-live .d { width: 5px; height: 5px; border-radius: 50%; background: #5fbf5f; box-shadow: 0 0 6px #5fbf5f; animation: pwPulse 1.6s ease-in-out infinite; }
 .gallery-card .gc-live .l { font-family: 'Inter', sans-serif; font-size: 8px; letter-spacing: 0.22em; text-transform: uppercase; color: #f4f3ee; }
 @media (prefers-reduced-motion: reduce) { .gallery-card { animation: none; } }
 .gallery-card .gc-meta { position: absolute; left: 18px; bottom: 18px; right: 18px; z-index: 2; }
@@ -1538,27 +1809,6 @@ img, video, iframe { max-width: 100%; }
   .skill-chips { margin-top: 36px; gap: 6px; }
   .skill-chip { padding: 8px 14px; font-size: 9px; }
 
-  /* WORLDS -------------------------------------------------------- */
-  .world { padding: 44px 0; }
-  .world-grid { gap: 24px; }
-  .world-meta { font-size: 9px; letter-spacing: 0.22em; margin-bottom: 12px; }
-  .world-title { font-size: clamp(36px, 10vw, 64px); }
-  .world-copy  { font-size: 15px; margin-top: 18px; }
-  .world-tags  { margin-top: 20px; gap: 6px; }
-  .world-tags span { padding: 5px 10px; font-size: 9px; }
-  .world-stage { height: clamp(320px, 92vw, 420px); }
-
-  /* PLAYA CARDS — slightly smaller chrome on phones */
-  .playa-chrome  { height: 26px; padding: 0 10px; gap: 8px; }
-  .playa-dots span { width: 7px; height: 7px; }
-  .playa-url    { font-size: 8px; padding: 3px 9px; max-width: 60%; }
-  .playa-live   { font-size: 6.5px; }
-  .playa-body   { top: 26px; }
-  .playa-caption { bottom: 10px; left: 10px; padding: 6px 10px; }
-  .playa-cap-meta { font-size: 7px; }
-  .playa-cap-title { font-size: 13px; }
-  .playa-cta { padding: 6px 11px; font-size: 8px; bottom: 10px; right: 10px; }
-
   /* GALLERY ----------------------------------------------------- */
   .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 32px; }
   .gallery-card .gc-meta { left: 14px; right: 14px; bottom: 14px; }
@@ -1583,7 +1833,7 @@ img, video, iframe { max-width: 100%; }
   .hero-cta-row { flex-direction: column; align-items: flex-start; }
   .hero-cta, .hero-cta-ghost { width: 100%; justify-content: center; }
   .hero-photo-wrap { max-width: 240px; }
-  .about-title, .world-title, .section-title, .contact-title { font-size: clamp(34px, 10vw, 56px); }
+  .about-title, .pw-title, .section-title, .contact-title { font-size: clamp(34px, 10vw, 56px); }
   .trans-h { font-size: 44px; }
 }
 
@@ -1603,7 +1853,7 @@ img, video, iframe { max-width: 100%; }
   nav#mainNav a, .nav-mobile-toggle,
   .theme-toggle, .hero-cta, .hero-cta-ghost,
   .btn-ink, .btn-paper { min-height: 44px; }
-  .playa-card { min-height: 220px; }
+  .pw-frame { min-height: 180px; }
 }
 
 /* Section accent line */
@@ -1628,12 +1878,12 @@ img, video, iframe { max-width: 100%; }
    shows anything jump or restart — but a parked animation is off the
    compositor's per-frame work list and its layer can be released.
    ================================================================= */
-[data-parked] .mockup,
 [data-parked] .gallery-card,
 [data-parked] .tm-orb,
 [data-parked] .tm-grid::before,
 [data-parked] .hero-photo-wrap,
-[data-parked] .playa-live .dot,
+[data-parked] .pw-live,
+[data-parked] .pw-hint-rail i,
 [data-parked] .cf-deployed .d,
 [data-parked] .cf-caret,
 [data-parked] .scroll-line,

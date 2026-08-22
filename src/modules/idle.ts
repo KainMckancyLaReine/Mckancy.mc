@@ -55,6 +55,16 @@ function warmImages(): void {
   const warmed = new Set<string>();
 
   const warm = (root: Element): void => {
+    // The Selected Work stack uses real <img> elements; a lazy image two
+    // sticky cards down would otherwise decode mid-scroll, exactly when
+    // its card is wiping open.
+    root.querySelectorAll<HTMLImageElement>('img[src]').forEach((el) => {
+      if (warmed.has(el.src)) return;
+      warmed.add(el.src);
+      void el.decode().catch(() => {
+        /* a failed prefetch must never surface — the paint path still works */
+      });
+    });
     root.querySelectorAll<HTMLElement>('[style*="background-image"]').forEach((el) => {
       const match = /url\(["']?(.+?)["']?\)/.exec(el.style.backgroundImage);
       const src = match?.[1];
