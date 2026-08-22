@@ -104,6 +104,94 @@ body.dark .footer {
 body.dark .theme-toggle .icon-sun { display: block; }
 body.dark .theme-toggle .icon-moon { display: none; }
 
+/* ---- Language switch — NL / EN ------------------------------------
+   A pill with both codes always on show and a lime thumb parked under
+   the active one. The motion (thumb spring, glyph shuffle, scan line)
+   is driven from src/modules/lang.ts; everything here is the resting
+   state it animates away from and back to.
+   -------------------------------------------------------------------- */
+.nav-controls { display: flex; align-items: center; gap: 14px; }
+
+.lang-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.lang-switch:focus-visible { outline: none; }
+
+.ls-body {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  width: 66px;
+  height: 26px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+  transition: border-color .3s var(--km-ease), box-shadow .3s var(--km-ease);
+}
+.lang-switch:hover .ls-body { border-color: var(--ink); }
+.lang-switch:focus-visible .ls-body {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 2px var(--orange);
+}
+
+.ls-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: calc(50% - 3px);
+  height: calc(100% - 6px);
+  border-radius: 999px;
+  background: var(--orange);
+  will-change: transform;
+}
+
+.ls-slot {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  font-size: 9px;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  /* Two glyphs on a proportional fallback would jitter as they shuffle. */
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-3);
+  transition: color .3s var(--km-ease);
+  user-select: none;
+}
+.lang-switch[data-lang="nl"] .ls-slot[data-ls="nl"],
+.lang-switch[data-lang="en"] .ls-slot[data-ls="en"] {
+  /* Always near-black: it sits on lime in both themes. */
+  color: #0d0d0d;
+}
+
+/* Thin lime blade that rides across the pill behind the labels. */
+.ls-scan {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  margin-left: -1px;
+  background: linear-gradient(to bottom, transparent, var(--orange), transparent);
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ls-body, .ls-slot { transition: none; }
+}
+
 * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; box-sizing: border-box; }
 html, body {
   margin: 0; padding: 0;
@@ -1851,8 +1939,10 @@ img, video, iframe { max-width: 100%; }
 /* Make sure links/CTAs have a touch-friendly hit area (≥ 44×44) */
 @media (hover: none), (pointer: coarse) {
   nav#mainNav a, .nav-mobile-toggle,
-  .theme-toggle, .hero-cta, .hero-cta-ghost,
+  .theme-toggle, .lang-switch, .hero-cta, .hero-cta-ghost,
   .btn-ink, .btn-paper { min-height: 44px; }
+  /* The pill itself keeps its 26px height; the button around it grows. */
+  .lang-switch { align-items: center; }
   .pw-frame { min-height: 180px; }
 }
 

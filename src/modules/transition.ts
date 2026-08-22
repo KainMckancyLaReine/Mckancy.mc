@@ -1,4 +1,5 @@
 import { gsap, ScrollTrigger, rafThrottle } from './motion';
+import { LANG_EVENT } from './lang';
 
 /**
  * Lightweight scroll-reveal for the "I make websites that move" statement.
@@ -8,6 +9,8 @@ import { gsap, ScrollTrigger, rafThrottle } from './motion';
  * CSS-transitioned transform, not a second animation loop.
  */
 export function initTransitionReveal(isTouch: boolean): void {
+  let revealed = false;
+
   gsap.set('.trans-h .word', { yPercent: 140, rotateZ: 3 });
   gsap.set('.trans-eyebrow, .trans-coords, .trans-footer', { opacity: 0, y: 20 });
 
@@ -16,10 +19,19 @@ export function initTransitionReveal(isTouch: boolean): void {
     start: 'top 80%',
     once: true,
     onEnter: () => {
+      revealed = true;
       gsap.to('.trans-eyebrow, .trans-coords', { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: 'power2.out' });
       gsap.to('.trans-h .word', { yPercent: 0, rotateZ: 0, duration: 1.4, stagger: 0.1, ease: 'back.out(1.5)' });
       gsap.to('.trans-footer', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', delay: 0.5 });
     },
+  });
+
+  // Swapping the language rebuilds these words. If the section has not
+  // been reached yet they must go back to their hidden start, otherwise
+  // the statement would already be standing there when the visitor
+  // arrives; if it has, the new words simply stay at rest.
+  window.addEventListener(LANG_EVENT, () => {
+    gsap.set('.trans-h .word', revealed ? { yPercent: 0, rotateZ: 0 } : { yPercent: 140, rotateZ: 3 });
   });
 
   if (!isTouch) {

@@ -1,5 +1,6 @@
 import emailjs from '@emailjs/browser';
 import { gsap } from './motion';
+import { t } from './lang';
 
 /**
  * Contact's own motion signature — an "ink rise" on the headline (skew +
@@ -80,16 +81,18 @@ export function initContactForm(): void {
           { publicKey: EMAILJS_PUBLIC_KEY }
         );
       } else {
-        const subject = encodeURIComponent(`Project inquiry — ${project || 'New idea'}`);
+        const subject = encodeURIComponent(
+          `${t('form.subject')} — ${project || t('form.subject.fallback')}`
+        );
         const body = encodeURIComponent(`${message}\n\n— ${name} (${email})`);
         window.location.href = `mailto:${FALLBACK_EMAIL}?subject=${subject}&body=${body}`;
       }
-      status.textContent = "Message received. I'll be in touch.";
+      status.textContent = t('form.status.ok');
       status.style.opacity = '1';
       form.reset();
     } catch (err) {
       console.error('Contact form send failed', err);
-      status.textContent = 'Something went wrong — please email me directly.';
+      status.textContent = t('form.status.error');
       status.style.opacity = '1';
     } finally {
       if (submitBtn) submitBtn.disabled = false;

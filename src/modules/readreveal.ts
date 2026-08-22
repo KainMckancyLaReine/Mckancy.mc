@@ -1,4 +1,5 @@
 import { gsap, ScrollTrigger } from './motion';
+import { LANG_EVENT } from './lang';
 
 /**
  * Scroll-linked "reading" reveal.
@@ -65,15 +66,17 @@ function splitWords(root: HTMLElement): void {
   root.dataset.rrSplit = 'true';
 }
 
-export function initReadReveal(reduceMotion: boolean): void {
-  const blocks = gsap.utils.toArray<HTMLElement>('.read-reveal');
-  if (!blocks.length) return;
+/** Every tween this module owns, so a language swap can tear them down cleanly. */
+let tweens: gsap.core.Tween[] = [];
 
-  // Reduced motion: leave the text at full contrast, no scroll scrubbing.
-  if (reduceMotion) {
-    blocks.forEach((block) => block.classList.add('rr-static'));
-    return;
+function buildReveal(): void {
+  for (const tween of tweens) {
+    tween.scrollTrigger?.kill();
+    tween.kill();
   }
+  tweens = [];
+
+  const blocks = gsap.utils.toArray<HTMLElement>('.read-reveal');
 
   blocks.forEach((block) => {
     // Each direct child block (a paragraph, a quote) gets its own scrub, so a
@@ -88,7 +91,7 @@ export function initReadReveal(reduceMotion: boolean): void {
       const words = line.querySelectorAll<HTMLElement>('.rr-word');
       if (!words.length) return;
 
-      gsap.fromTo(
+      const tween = gsap.fromTo(
         words,
         { opacity: DIM },
         {
@@ -108,6 +111,7 @@ export function initReadReveal(reduceMotion: boolean): void {
           },
         }
       );
+      tweens.push(tween);
     });
   });
 
@@ -115,4 +119,22 @@ export function initReadReveal(reduceMotion: boolean): void {
   // browser measures the block; refresh once so every trigger below it
   // starts from correct positions.
   ScrollTrigger.refresh();
+}
+
+export function initReadReveal(reduceMotion: boolean): void {
+  const blocks = gsap.utils.toArray<HTMLElement>('.read-reveal');
+  if (!blocks.length) return;
+
+  // Reduced motion: leave the text at full contrast, no scroll scrubbing.
+  if (reduceMotion) {
+    blocks.forEach((block) => block.classList.add('rr-static'));
+    return;
+  }
+
+  buildReveal();
+
+  // A language swap replaces the paragraph HTML wholesale, which throws
+  // away every `.rr-word` span these tweens were animating. Rebuild from
+  // the new copy rather than leaving the block dimmed forever.
+  window.addEventListener(LANG_EVENT, () => buildReveal());
 }

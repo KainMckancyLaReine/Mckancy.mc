@@ -11,6 +11,7 @@ import { initSkillsReveal } from './modules/skills';
 import { initWorlds } from './modules/worlds';
 import { initGallery } from './modules/gallery';
 import { initClock, initThemeToggle, initMobileDrawer, initSmoothAnchors } from './modules/nav';
+import { initLang } from './modules/lang';
 import { initContactForm, initContactReveal } from './modules/contact';
 import { initIdleAnimations } from './modules/idle';
 
@@ -24,6 +25,11 @@ probePhoto();
 
 function boot(): void {
   const { isTouch, isDesktop, reduceMotion } = readViewportFlags();
+
+  // First, always: several modules below split the copy into per-word
+  // spans on init, so the page has to already be in the visitor's
+  // language before any of them look at it.
+  initLang(reduceMotion);
 
   initClock();
   initCursor(isTouch);

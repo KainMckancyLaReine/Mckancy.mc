@@ -1,4 +1,5 @@
 import { gsap } from './motion';
+import { LANG_EVENT } from './lang';
 
 function wrapWord(txt: string): string {
   return `<span class="aw-mask" style="display:inline-block; overflow:hidden; vertical-align:bottom;"><span class="aw-inner" style="display:inline-block; will-change:transform;">${txt}</span></span>`;
@@ -62,6 +63,16 @@ export function initAboutReveal(isDesktop: boolean, isTouch: boolean): void {
 
   const aboutTitle = document.querySelector<HTMLElement>('.about-title');
   if (aboutTitle) splitAboutTitleIntoWords(aboutTitle);
+
+  // A language swap rewrites the title, which drops the mask spans the
+  // timeline below animates. Re-split and leave the new words at rest —
+  // replaying the entrance for copy already on screen would read as a glitch.
+  window.addEventListener(LANG_EVENT, () => {
+    const title = document.querySelector<HTMLElement>('.about-title');
+    if (!title) return;
+    splitAboutTitleIntoWords(title);
+    gsap.set('.about-title .aw-inner', { yPercent: 0, opacity: 1 });
+  });
 
   const aboutTl = gsap.timeline({
     scrollTrigger: { trigger: '#about', start: 'top 70%', toggleActions: 'play none none reverse' },
