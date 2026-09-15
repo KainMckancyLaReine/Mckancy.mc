@@ -2636,3 +2636,144 @@ a.cf-v:hover::after { transform: scaleX(1); transform-origin: left; }
 .cv-lang:hover { background: var(--cv-ink); border-color: var(--cv-ink); color: #080806; }
 .cv-lang:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; }
 @media (max-width: 760px) { .cv-lang { height: 36px; min-width: 36px; padding: 0 10px; } }
+
+/* ============ CV BOOT SEQUENCE ============
+   Plays on the closed shutter, above the aperture blades, and hands the
+   rail over to the header hairline when it finishes (see cvboot.ts).
+   Every measurement in here is fixed — the log is a clipped, bottom-aligned
+   column and the counter is tabular — so no step can shift the panel. */
+
+.cv-boot {
+  position: absolute; inset: 0;
+  z-index: 6;
+  display: grid; place-items: center;
+  padding: 24px;
+  opacity: 0;
+  pointer-events: none;
+}
+.cv-boot.is-live { pointer-events: auto; }
+.cvb-dict { display: none; }
+
+.cvb-panel {
+  width: min(440px, 100%);
+  padding: 26px 26px 20px;
+  border: 1px solid var(--cv-line);
+  border-radius: var(--radius-md);
+  background: rgba(244,243,239,0.028);
+  backdrop-filter: blur(10px);
+  will-change: transform, opacity;
+}
+.cvb-panel:focus { outline: none; }
+.cvb-panel:focus-visible { outline: 2px solid var(--orange); outline-offset: 4px; }
+
+.cvb-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+.cvb-eyebrow {
+  font-size: 9px; letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--cv-ink-3);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.cvb-count {
+  font-size: 11px; letter-spacing: 0.1em;
+  color: var(--orange);
+  font-variant-numeric: tabular-nums;
+  /* Fixed by the numerals, not by the content — 007 and 100 are the same width. */
+}
+
+/* Three lines of history, bottom-aligned and clipped: a line leaving the
+   top is a transform, never a reflow. */
+.cvb-log {
+  height: 54px;
+  margin-top: 20px;
+  overflow: hidden;
+  display: flex; flex-direction: column; justify-content: flex-end;
+}
+.cvb-line {
+  height: 18px; line-height: 18px;
+  font-size: 11px; letter-spacing: 0.02em;
+  color: var(--cv-ink-2);
+  opacity: 0;
+  white-space: nowrap;
+}
+.cvb-status {
+  height: 28px;
+  margin-top: 4px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 17px; font-weight: 600; letter-spacing: -0.015em;
+  line-height: 28px;
+  color: var(--cv-ink);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  will-change: transform, opacity;
+}
+
+.cvb-rail {
+  position: relative;
+  height: 2px;
+  margin-top: 18px;
+  border-radius: 999px;
+  background: var(--cv-line-2);
+  overflow: hidden;
+  transform-origin: 0 50%;
+}
+.cvb-rail i {
+  position: absolute; inset: 0;
+  display: block;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent-2), var(--orange));
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  will-change: transform;
+}
+
+.cvb-foot {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  min-height: 16px;
+  margin-top: 14px;
+  font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+}
+.cvb-note { color: var(--accent-2); opacity: 0; }
+.cvb-note.is-shown { opacity: 1; }
+.cvb-hint { display: inline-flex; align-items: center; gap: 7px; color: var(--cv-ink-3); margin-left: auto; }
+.cvb-hint kbd {
+  font: inherit;
+  padding: 3px 6px;
+  border: 1px solid var(--cv-line);
+  border-radius: 5px;
+  color: var(--cv-ink-2);
+}
+
+/* While the sequence runs, the dossier is not there yet — not dimmed,
+   not behind a spinner: the shutter simply has not opened. */
+.cv-overlay.is-booting .cv-bar,
+.cv-overlay.is-booting .cv-index,
+.cv-overlay.is-booting .cv-scroll { opacity: 0; pointer-events: none; }
+
+/* The trigger answers the click itself, before anything else moves. */
+[data-cv-open] { position: relative; }
+.nav-cv.is-arming i { background: var(--orange); transform: scale(1.6); }
+.nav-cv i, .hero-cta-cv::after { transition: transform .4s var(--km-ease), background .3s; }
+.hero-cta-cv.is-arming, .drawer-cv.is-arming { color: var(--orange); }
+.hero-cta-cv::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: var(--orange);
+  transform: scaleX(0); transform-origin: 0 50%;
+}
+.hero-cta-cv.is-arming::after { transform: scaleX(1); }
+
+@media (max-width: 760px) {
+  .cvb-panel { padding: 20px 20px 16px; }
+  .cvb-status { font-size: 15px; }
+  .cvb-eyebrow { max-width: 62%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cvb-panel { backdrop-filter: none; }
+}
+
+/* Set by the boot sequence once the bytes are in hand — the download is
+   local before the visitor can reach for it. */
+.cv-doc-meta { margin-top: 16px; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--cv-ink-3); }
+.cv-dl.is-off, .cv-btn.is-off { opacity: 0.4; pointer-events: none; }
+
+/* The shutter seam is a highlight when the blades part; while the boot
+   panel is up it would be a stray line crossing the panel, so it dims. */
+.cv-overlay.is-booting .cv-ap-top { border-bottom-color: rgba(198,255,74,0.1); }
+.cv-overlay.is-booting .cv-ap-bot { border-top-color: rgba(198,255,74,0.1); }

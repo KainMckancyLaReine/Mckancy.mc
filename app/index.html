@@ -926,6 +926,39 @@
   <div class="cv-orbs" aria-hidden="true"><span></span><span></span><span></span></div>
   <div class="cv-scanline" aria-hidden="true"></div>
 
+  <!-- Boot sequence — the state between the click and the dossier.
+       Sits above the aperture blades, so it plays on a closed shutter and
+       the dossier is only revealed once it hands over. See cvboot.ts. -->
+  <div id="cvBoot" class="cv-boot">
+    <div class="cvb-panel" id="cvBootPanel" tabindex="-1">
+      <div class="cvb-head">
+        <span class="cvb-eyebrow mono" data-i18n="cv.boot.eyebrow">Dossier — Kain Mckancy La Reine</span>
+        <span class="cvb-count mono" id="cvBootCount">000</span>
+      </div>
+      <div class="cvb-log" id="cvBootLog" aria-hidden="true"></div>
+      <div class="cvb-status" id="cvBootStatus" role="status" aria-live="polite"></div>
+      <div class="cvb-rail" id="cvBootRail"><i id="cvBootFill"></i></div>
+      <div class="cvb-foot">
+        <span class="cvb-note mono" id="cvBootNote"></span>
+        <span class="cvb-hint mono" id="cvBootHint"><kbd>Esc</kbd><span data-i18n="cv.boot.cancel">cancel</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- The boot lines exist only at runtime, so they have nowhere in the
+       page to be harvested from — this is that place. -->
+  <div class="cvb-dict" hidden aria-hidden="true">
+    <span data-i18n="cv.boot.profile">Preparing profile</span>
+    <span data-i18n="cv.boot.type">Typesetting</span>
+    <span data-i18n="cv.boot.sections">Compiling sections</span>
+    <span data-i18n="cv.boot.verify">Verifying document</span>
+    <span data-i18n="cv.boot.assemble">Assembling dossier</span>
+    <span data-i18n="cv.boot.ready">Ready</span>
+    <span data-i18n="cv.boot.restore">Restoring dossier</span>
+    <span data-i18n="cv.boot.note.nodoc">Document unavailable — opening without the download</span>
+    <span data-i18n="cv.boot.doc.size">PDF · {size}</span>
+  </div>
+
   <header class="cv-bar">
     <div class="cv-bar-l mono">
       <span class="cv-rec" aria-hidden="true"></span>
@@ -1161,6 +1194,7 @@
               <span aria-hidden="true">↗</span>
             </button>
           </div>
+          <div class="cv-doc-meta mono" id="cvDocMeta" aria-live="polite"></div>
           <div class="cv-end mono" data-i18n="cv.end">End of dossier — KMLR 2026</div>
         </div>
       </section>

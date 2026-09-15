@@ -1,5 +1,6 @@
 import { gsap, rafThrottle } from './motion';
 import { LANG_EVENT, getLang, setLang, t } from './lang';
+import { handOff, runBoot, type BootDeps, type BootOutcome, type BootRefs } from './cvboot';
 
 /**
  * CV — the fullscreen dossier overlay.
@@ -29,9 +30,14 @@ const cvPdfUrl = new URL('../../assets/cv/Kain-Mckancy-La-Reine-CV.pdf', import.
 const GLYPHS = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789#%&$@/<>*+';
 
 let reduceMotion = false;
-let isOpen = false;
 let lastTrigger: HTMLElement | null = null;
 let pageScrollY = 0;
+
+/** closed → booting → open. One value, so no two paths can disagree. */
+let phase: 'closed' | 'booting' | 'open' = 'closed';
+let bootController: AbortController | null = null;
+/** The full sequence is honest exactly once; after that the assets are warm. */
+let hasBooted = false;
 
 /* ------------------------------------------------------------------ */
 /* text splitting                                                      */
@@ -275,15 +281,94 @@ export function initCv(isTouch: boolean, prefersReducedMotion: boolean): void {
   const indexButtons = Array.from(overlay.querySelectorAll<HTMLElement>('[data-cv-jump]'));
   const card = document.getElementById('cvIdCard');
 
+  const progressWrap = overlay.querySelector<HTMLElement>('.cv-progress');
+  const bootPanel = document.getElementById('cvBootPanel');
+  const docMeta = document.getElementById('cvDocMeta');
+
   // Both download buttons point at the hashed asset Vite emits, and both
-  // ask the browser for a human filename rather than the hashed one.
-  overlay.querySelectorAll<HTMLAnchorElement>('#cvDownload, #cvDownload2').forEach((a) => {
+  // ask the browser for a human filename rather than the hashed one. The
+  // boot sequence swaps in an object URL once it has the bytes in hand —
+  // by the time the visitor can click, the file is already local.
+  const downloads = Array.from(
+    overlay.querySelectorAll<HTMLAnchorElement>('#cvDownload, #cvDownload2')
+  );
+  downloads.forEach((a) => {
     a.href = cvPdfUrl;
     a.setAttribute('download', 'Kain-Mckancy-La-Reine-CV.pdf');
     a.addEventListener('click', () => {
       a.classList.add('is-downloading');
       window.setTimeout(() => a.classList.remove('is-downloading'), 600);
     });
+  });
+
+  /* ---- boot sequence wiring ---- */
+  const bootEls = {
+    root: document.getElementById('cvBoot'),
+    panel: bootPanel,
+    status: document.getElementById('cvBootStatus'),
+    log: document.getElementById('cvBootLog'),
+    rail: document.getElementById('cvBootRail'),
+    fill: document.getElementById('cvBootFill'),
+    counter: document.getElementById('cvBootCount'),
+    note: document.getElementById('cvBootNote'),
+    hint: document.getElementById('cvBootHint'),
+  };
+  // One null check for the whole panel: a partial sequence is worse than
+  // none, and `open()` falls back to revealing the dossier directly.
+  const bootRefs: BootRefs | null = Object.values(bootEls).every(Boolean)
+    ? (bootEls as BootRefs)
+    : null;
+
+  /** The portrait the card paints, read back from the style Vite rewrote. */
+  const portraitUrl = ((): string => {
+    const photo = overlay.querySelector<HTMLElement>('.cv-card-photo');
+    const match = photo ? /url\(["']?(.+?)["']?\)/.exec(getComputedStyle(photo).backgroundImage) : null;
+    return match?.[1] ?? '';
+  })();
+
+  let objectUrl: string | null = null;
+
+  const bootDeps: BootDeps = {
+    photoUrl: portraitUrl,
+    pdfUrl: cvPdfUrl,
+    // The work the dossier would otherwise do on first scroll: split every
+    // heading and measure every meter track once, up front, so the first
+    // reveal is pure animation with no layout reads in the middle of it.
+    prepare: () => {
+      overlay.querySelectorAll<HTMLElement>('[data-cv-split]').forEach((el) => splitChars(el));
+      overlay.querySelectorAll<HTMLElement>('.cv-meter').forEach((el) => {
+        const track = el.querySelector<HTMLElement>('.cm-track');
+        const level = Number(el.dataset.cvLevel ?? '0');
+        if (track) el.style.setProperty('--cm-sweep', `${(track.offsetWidth * level) / 100 + 40}px`);
+      });
+    },
+    onDocumentReady: (url, bytes) => {
+      // Revoked before replacing, so repeated opens cannot leak blobs.
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+      objectUrl = url;
+      downloads.forEach((a) => {
+        a.href = url;
+        a.classList.remove('is-off');
+        a.removeAttribute('aria-disabled');
+      });
+      if (docMeta) {
+        docMeta.textContent = (t('cv.boot.doc.size') || 'PDF · {size}').replace(
+          '{size}',
+          `${Math.round(bytes / 1024)} KB`
+        );
+      }
+    },
+    onDocumentFailed: () => {
+      downloads.forEach((a) => {
+        a.classList.add('is-off');
+        a.setAttribute('aria-disabled', 'true');
+      });
+      if (docMeta) docMeta.textContent = t('cv.boot.note.nodoc') || '';
+    },
+  };
+
+  window.addEventListener('pagehide', () => {
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
   });
 
   /* ---- language switch inside the bar ---- */
@@ -435,31 +520,75 @@ export function initCv(isTouch: boolean, prefersReducedMotion: boolean): void {
   }
 
   /* ---- open / close ---- */
-  function open(trigger: HTMLElement | null): void {
-    if (isOpen) return;
-    isOpen = true;
+
+  /**
+   * One click runs three phases: the trigger answers immediately, the boot
+   * sequence prepares the dossier for real (cvboot.ts), and the sequence
+   * then *becomes* the dossier rather than being replaced by it.
+   *
+   * `phase` plus one AbortController is the whole concurrency story. A
+   * second click during boot is ignored, Escape during boot aborts the
+   * in-flight fetch and unwinds, and neither can leave a half-built
+   * dossier behind — the reveal only ever runs off a run that returned.
+   */
+  async function open(trigger: HTMLElement | null): Promise<void> {
+    if (phase !== 'closed') return;
+    phase = 'booting';
     lastTrigger = trigger;
+    trigger?.classList.add('is-arming');
 
     // Freeze the page where it stands. `position: fixed` on the body would
     // also work and is worse: it collapses the layout, which forces every
     // pinned trigger underneath to remeasure on close.
     pageScrollY = window.scrollY;
     document.body.classList.add('cv-open');
-    overlay.classList.add('is-open');
+    overlay.classList.add('is-open', 'is-booting');
     overlay.removeAttribute('inert');
     overlay.setAttribute('aria-hidden', 'false');
     scroller.scrollTop = 0;
     document.addEventListener('keydown', onKeydown);
 
+    // The shutter stays closed for the whole sequence: the dossier is not
+    // dimmed behind a loader, it simply has not been revealed yet.
+    gsap.killTweensOf([overlay, ...blades]);
+    gsap.set(overlay, { opacity: 1, scale: 1 });
+    gsap.set(blades, { yPercent: 0 });
+
+    bootPanel?.focus({ preventScroll: true });
+
+    bootController?.abort();
+    bootController = new AbortController();
+
+    let outcome: BootOutcome = 'ready';
+    if (bootRefs) {
+      outcome = await runBoot(bootRefs, bootDeps, {
+        reduceMotion,
+        abbreviated: hasBooted,
+        trigger,
+        signal: bootController.signal,
+      });
+    }
+
+    trigger?.classList.remove('is-arming');
+    if (outcome === 'aborted' || phase !== 'booting') return;
+
+    hasBooted = true;
+    phase = 'open';
+    overlay.classList.remove('is-booting');
+    revealDossier();
+  }
+
+  /** The shutter opens and the chrome arrives, on the same clock as the hand-off. */
+  function revealDossier(): void {
     if (reduceMotion) {
-      gsap.set(overlay, { opacity: 1, scale: 1 });
+      if (bootRefs && progressWrap) handOff(bootRefs, progressWrap, true);
       gsap.set(blades, { yPercent: (i) => (i === 0 ? -100 : 100) });
+      gsap.set([bar, indexRail], { clearProps: 'all' });
       scroller.focus({ preventScroll: true });
       onScroll();
       return;
     }
 
-    gsap.killTweensOf([overlay, ...blades]);
     const tl = gsap.timeline({
       onComplete: () => {
         scroller.focus({ preventScroll: true });
@@ -467,29 +596,40 @@ export function initCv(isTouch: boolean, prefersReducedMotion: boolean): void {
       },
     });
 
-    tl.set(blades, { yPercent: 0 })
-      .set(overlay, { opacity: 1, scale: 1.04 })
-      // Blades part like a shutter, the plate settles back to 1:1 behind them.
-      .to(blades, { yPercent: (i) => (i === 0 ? -100 : 100), duration: 0.95, ease: 'expo.inOut' }, 0)
-      .to(overlay, { scale: 1, duration: 1.1, ease: 'expo.out' }, 0)
-      .from(bar, { opacity: 0, y: -18, duration: 0.6, ease: 'power3.out' }, 0.35)
-      .from(indexRail, { opacity: 0, x: -14, duration: 0.6, ease: 'power3.out' }, 0.45)
-      .from(
+    if (bootRefs && progressWrap) tl.add(handOff(bootRefs, progressWrap, false), 0);
+
+    tl.to(blades, { yPercent: (i) => (i === 0 ? -100 : 100), duration: 1, ease: 'expo.inOut' }, 0.3)
+      .fromTo(overlay, { scale: 1.02 }, { scale: 1, duration: 1.1, ease: 'expo.out' }, 0.3)
+      .fromTo(bar, { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 0.75)
+      .fromTo(indexRail, { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: 0.6, ease: 'power3.out' }, 0.85)
+      .fromTo(scroller, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.out' }, 0.55)
+      .fromTo(
         card,
-        { opacity: 0, rotateY: -28, y: 40, transformPerspective: 900, duration: 1, ease: 'expo.out' },
-        0.3
+        { opacity: 0, rotateY: -24, y: 36, transformPerspective: 900 },
+        { opacity: 1, rotateY: 0, y: 0, duration: 1, ease: 'expo.out', clearProps: 'transform' },
+        0.62
       );
   }
 
   function close(): void {
-    if (!isOpen) return;
-    isOpen = false;
+    if (phase === 'closed') return;
+
+    // Aborting mid-boot cancels the fetch and unwinds through the same
+    // path, so there is no route where the dossier opens after a close.
+    const wasBooting = phase === 'booting';
+    phase = 'closed';
+    bootController?.abort();
+    lastTrigger?.classList.remove('is-arming');
     document.removeEventListener('keydown', onKeydown);
     overlay.setAttribute('inert', '');
     overlay.setAttribute('aria-hidden', 'true');
 
     const finish = (): void => {
-      overlay.classList.remove('is-open');
+      overlay.classList.remove('is-open', 'is-booting');
+      if (bootRefs) {
+        bootRefs.root.classList.remove('is-live');
+        gsap.set(bootRefs.root, { opacity: 0 });
+      }
       document.body.classList.remove('cv-open');
       // The page never actually moved, but Safari restores an offset of
       // its own when overflow comes back — put it back by hand.
@@ -504,6 +644,16 @@ export function initCv(isTouch: boolean, prefersReducedMotion: boolean): void {
     }
 
     gsap.killTweensOf([overlay, ...blades]);
+    if (wasBooting) {
+      // Nothing was revealed yet, so there is nothing to close — the panel
+      // simply withdraws the way it arrived.
+      gsap
+        .timeline({ onComplete: finish })
+        .to(bootRefs?.panel ?? overlay, { opacity: 0, y: 10, scale: 0.98, duration: 0.3, ease: 'power2.in' }, 0)
+        .to(overlay, { opacity: 0, duration: 0.3, ease: 'power2.in' }, 0.12);
+      return;
+    }
+
     gsap
       .timeline({ onComplete: finish })
       .to(blades, { yPercent: 0, duration: 0.7, ease: 'expo.inOut' }, 0)
@@ -521,7 +671,7 @@ export function initCv(isTouch: boolean, prefersReducedMotion: boolean): void {
   }
 
   document.querySelectorAll<HTMLElement>('[data-cv-open]').forEach((btn) => {
-    btn.addEventListener('click', () => open(btn));
+    btn.addEventListener('click', () => void open(btn));
   });
   closeBtn.addEventListener('click', () => close());
 
