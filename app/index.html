@@ -162,6 +162,9 @@
     <li><a href="#worlds" data-magnet data-i18n="nav.work">Work</a></li>
     <li><a href="#gallery-section" data-magnet data-i18n="nav.gallery">Gallery</a></li>
     <li><a href="#contact" data-magnet data-i18n="nav.contact">Contact</a></li>
+    <!-- Not an anchor: the CV is a fullscreen overlay, not a section of the
+         page, so this has to be a button — see src/modules/cv.ts. -->
+    <li><button class="nav-cv" type="button" data-cv-open data-magnet><span data-i18n="nav.cv">CV</span><i aria-hidden="true"></i></button></li>
   </ul>
   <div class="nav-controls">
     <!-- Language switch — see src/modules/lang.ts for the shuffle animation. -->
@@ -194,6 +197,7 @@
   <a href="#worlds" data-drawer-link data-i18n="nav.work">Work</a>
   <a href="#gallery-section" data-drawer-link data-i18n="nav.gallery">Gallery</a>
   <a href="#contact" data-drawer-link data-i18n="nav.contact">Contact</a>
+  <button class="drawer-cv" type="button" data-cv-open data-drawer-link><span data-i18n="nav.cv">CV</span></button>
 </div>
 
 <!-- ============ HERO — clean ============ -->
@@ -219,6 +223,9 @@
           <span>→</span>
         </a>
         <a href="#contact" class="hero-cta-ghost" data-magnet>Contact ↗</a>
+        <button class="hero-cta-ghost hero-cta-cv" type="button" data-cv-open data-magnet>
+          <span data-i18n="hero.cta.cv">View CV</span> <span aria-hidden="true">↗</span>
+        </button>
       </div>
     </div>
 
@@ -901,6 +908,266 @@
     </div>
   </div>
 </section>
+
+<!-- ============ CV — FULLSCREEN DOSSIER OVERLAY ============
+     Opened from the nav / drawer / hero button, animated in src/modules/cv.ts.
+     Lives at the end of the body so nothing on the page can stack above it,
+     and starts `inert` so the twenty-odd focusable nodes inside are out of
+     the tab order until it is actually open. -->
+<div id="cvOverlay" class="cv-overlay" role="dialog" aria-modal="true" aria-labelledby="cvTitle" aria-hidden="true" inert>
+
+  <!-- Atmosphere: veil, aperture blades, grain, drifting orbs, scan line -->
+  <div class="cv-veil" aria-hidden="true"></div>
+  <div class="cv-aperture" aria-hidden="true">
+    <div class="cv-ap cv-ap-top"></div>
+    <div class="cv-ap cv-ap-bot"></div>
+  </div>
+  <div class="cv-grain" aria-hidden="true"></div>
+  <div class="cv-orbs" aria-hidden="true"><span></span><span></span><span></span></div>
+  <div class="cv-scanline" aria-hidden="true"></div>
+
+  <header class="cv-bar">
+    <div class="cv-bar-l mono">
+      <span class="cv-rec" aria-hidden="true"></span>
+      <span class="cv-bar-title" data-i18n="cv.bar">Curriculum Vitae — Kain Mckancy La Reine</span>
+      <!-- The full line has nowhere to go on a phone; this takes over there. -->
+      <span class="cv-bar-short" aria-hidden="true">CV</span>
+    </div>
+    <div class="cv-bar-r">
+      <a class="cv-dl mono" id="cvDownload" href="#" data-magnet>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M4 20h16"/></svg>
+        <span data-i18n="cv.download">Download PDF</span>
+        <span class="cv-dl-sheen" aria-hidden="true"></span>
+      </a>
+      <!-- The nav's language pill is behind the overlay while this is open,
+           and the dossier is the most copy-heavy thing on the site — so it
+           carries its own switch. -->
+      <button class="cv-lang mono" id="cvLang" type="button" data-magnet>NL</button>
+      <button class="cv-close" id="cvClose" type="button" data-magnet data-i18n-attr="aria-label:cv.close" aria-label="Close CV">
+        <span aria-hidden="true"></span><span aria-hidden="true"></span>
+      </button>
+    </div>
+    <div class="cv-progress" aria-hidden="true"><span id="cvProgressBar"></span></div>
+  </header>
+
+  <!-- Section index — rail on the left, chip row on phones -->
+  <nav class="cv-index mono" id="cvIndex" data-i18n-attr="aria-label:cv.index.label" aria-label="CV sections">
+    <button type="button" data-cv-jump="cvSecProfile"><i aria-hidden="true"></i><span data-i18n="cv.idx.profile">Profile</span></button>
+    <button type="button" data-cv-jump="cvSecPath"><i aria-hidden="true"></i><span data-i18n="cv.idx.path">Path</span></button>
+    <button type="button" data-cv-jump="cvSecSkills"><i aria-hidden="true"></i><span data-i18n="cv.idx.skills">Skills</span></button>
+    <button type="button" data-cv-jump="cvSecCerts"><i aria-hidden="true"></i><span data-i18n="cv.idx.certs">Certificates</span></button>
+    <button type="button" data-cv-jump="cvSecExtra"><i aria-hidden="true"></i><span data-i18n="cv.idx.extra">Languages</span></button>
+  </nav>
+
+  <div class="cv-scroll" id="cvScroll" tabindex="-1">
+    <div class="cv-inner">
+
+      <!-- ---------- 01 · PROFILE ---------- -->
+      <section class="cv-sec cv-profile" id="cvSecProfile" data-cv-num="01">
+        <div class="cv-profile-grid">
+
+          <div class="cv-card" id="cvIdCard">
+            <div class="cv-card-glow" aria-hidden="true"></div>
+            <div class="cv-card-photo" style="background-image:url('../assets/gal/kain.webp');" role="img" data-i18n-attr="aria-label:cv.photo.alt" aria-label="Portrait of Kain Mckancy La Reine"></div>
+            <div class="cv-card-strip mono">
+              <span>KMLR · 2004</span>
+              <span class="cv-card-dot" aria-hidden="true"></span>
+              <span>AMS — NL</span>
+            </div>
+            <div class="cv-card-corner c-tl" aria-hidden="true"></div>
+            <div class="cv-card-corner c-tr" aria-hidden="true"></div>
+            <div class="cv-card-corner c-bl" aria-hidden="true"></div>
+            <div class="cv-card-corner c-br" aria-hidden="true"></div>
+          </div>
+
+          <div class="cv-profile-copy">
+            <div class="cv-eyebrow mono" data-i18n="cv.eyebrow">Dossier — Curriculum Vitae</div>
+            <h2 class="cv-title" id="cvTitle" data-cv-split>Kain Mckancy <span class="it">La Reine.</span></h2>
+            <p class="cv-lede" data-cv-fade data-i18n="cv.lede">Creative developer from Almere, working out of Amsterdam. Four years of school and studio work behind me — from media design at Arte College to the full software track at Bit Academy — and a year shipping production front-end at Grippr. I build cinematic, motion-driven interfaces in React, TypeScript and GSAP.</p>
+
+            <ul class="cv-facts mono">
+              <li data-cv-fact>
+                <span class="cf-k" data-i18n="cv.fact.email">Email</span>
+                <a class="cf-v" href="mailto:kkain25@gmail.com">kkain25@gmail.com</a>
+              </li>
+              <li data-cv-fact>
+                <span class="cf-k" data-i18n="cv.fact.phone">Phone</span>
+                <a class="cf-v" href="tel:+31616336034">+31 6 16 33 60 34</a>
+              </li>
+              <li data-cv-fact>
+                <span class="cf-k" data-i18n="cv.fact.based">Based</span>
+                <span class="cf-v">Almere · Amsterdam, NL</span>
+              </li>
+              <li data-cv-fact>
+                <span class="cf-k" data-i18n="cv.fact.born">Born</span>
+                <span class="cf-v" data-i18n="cv.fact.born.v">25 February 2004</span>
+              </li>
+              <li data-cv-fact>
+                <span class="cf-k" data-i18n="cv.fact.site">Site</span>
+                <a class="cf-v" href="https://kainmckancylareine.github.io/Mckancy.mc/">kainmckancylareine.github.io</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="cv-stats">
+          <div class="cv-stat" data-cv-count="5" data-cv-suffix="+">
+            <span class="cs-n">0</span>
+            <span class="cs-l mono" data-i18n="cv.stat.years">Years building</span>
+          </div>
+          <div class="cv-stat" data-cv-count="5" data-cv-suffix="">
+            <span class="cs-n">0</span>
+            <span class="cs-l mono" data-i18n="cv.stat.projects">Live client sites</span>
+          </div>
+          <div class="cv-stat" data-cv-count="5" data-cv-suffix="">
+            <span class="cs-n">0</span>
+            <span class="cs-l mono" data-i18n="cv.stat.certs">Certificates</span>
+          </div>
+          <div class="cv-stat" data-cv-count="11" data-cv-suffix="">
+            <span class="cs-n">0</span>
+            <span class="cs-l mono" data-i18n="cv.stat.stack">Stack tools</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- 02 · PATH ---------- -->
+      <section class="cv-sec" id="cvSecPath" data-cv-num="02">
+        <h3 class="cv-sec-title" data-cv-split data-i18n="cv.path.title">Education <span class="it">&amp; experience.</span></h3>
+
+        <ol class="cv-timeline">
+          <li class="cv-tl" data-cv-item>
+            <span class="tl-node" aria-hidden="true"><i></i></span>
+            <span class="tl-date mono" data-cv-scramble>sep 2021 — sep 2025</span>
+            <div class="tl-body">
+              <span class="tl-tag mono" data-i18n="cv.tag.education">Education</span>
+              <h4 class="tl-role" data-i18n="cv.path.bit.role">Software Developer</h4>
+              <div class="tl-org">Bit Academy <span class="tl-loc">— Amsterdam</span></div>
+              <p class="tl-copy" data-i18n="cv.path.bit.copy">Full software track: PHP and databases first, then JavaScript, React and modern front-end architecture — every module graded on shipped, working projects rather than exams.</p>
+              <div class="tl-chips"><span>PHP</span><span>JavaScript</span><span>React</span><span>Databases</span></div>
+            </div>
+          </li>
+
+          <li class="cv-tl" data-cv-item>
+            <span class="tl-node" aria-hidden="true"><i></i></span>
+            <span class="tl-date mono" data-cv-scramble>nov 2023 — aug 2024</span>
+            <div class="tl-body">
+              <span class="tl-tag mono tl-tag-work" data-i18n="cv.tag.work">Experience</span>
+              <h4 class="tl-role" data-i18n="cv.path.grippr.role">Junior Software Engineer</h4>
+              <div class="tl-org">Grippr <span class="tl-loc">— Laren</span></div>
+              <p class="tl-copy" data-i18n="cv.path.grippr.copy">Front-end work in a small product team: building and maintaining React components, wiring them to the API, and taking designs from Figma to responsive production screens.</p>
+              <div class="tl-chips"><span>React</span><span>TypeScript</span><span>REST API</span><span>Scrum</span></div>
+            </div>
+          </li>
+
+          <li class="cv-tl" data-cv-item>
+            <span class="tl-node" aria-hidden="true"><i></i></span>
+            <span class="tl-date mono" data-cv-scramble>sep 2017 — aug 2021</span>
+            <div class="tl-body">
+              <span class="tl-tag mono" data-i18n="cv.tag.education">Education</span>
+              <h4 class="tl-role" data-i18n="cv.path.arte.role">Media Design</h4>
+              <div class="tl-org">Arte College <span class="tl-loc">— Almere Poort</span></div>
+              <p class="tl-copy" data-i18n="cv.path.arte.copy">Where the visual half comes from — composition, typography, color and motion, four years of it, long before the first line of code.</p>
+              <div class="tl-chips"><span data-i18n="cv.chip.artdirection">Art direction</span><span data-i18n="cv.chip.typography">Typography</span><span data-i18n="cv.chip.motion">Motion</span></div>
+            </div>
+          </li>
+
+          <li class="cv-tl-line" aria-hidden="true"><span id="cvTlFill"></span></li>
+        </ol>
+      </section>
+
+      <!-- ---------- 03 · SKILLS ---------- -->
+      <section class="cv-sec" id="cvSecSkills" data-cv-num="03">
+        <h3 class="cv-sec-title" data-cv-split data-i18n="cv.skills.title">The stack, <span class="it">measured.</span></h3>
+
+        <div class="cv-meters">
+          <div class="cv-meter" data-cv-level="100"><span class="cm-k">HTML5</span><span class="cm-v mono">0%</span><span class="cm-track"><i></i></span></div>
+          <div class="cv-meter" data-cv-level="100"><span class="cm-k">CSS3</span><span class="cm-v mono">0%</span><span class="cm-track"><i></i></span></div>
+          <div class="cv-meter" data-cv-level="80"><span class="cm-k">React</span><span class="cm-v mono">0%</span><span class="cm-track"><i></i></span></div>
+          <div class="cv-meter" data-cv-level="80"><span class="cm-k">TypeScript</span><span class="cm-v mono">0%</span><span class="cm-track"><i></i></span></div>
+          <div class="cv-meter" data-cv-level="80"><span class="cm-k">MQL5</span><span class="cm-v mono">0%</span><span class="cm-track"><i></i></span></div>
+          <div class="cv-meter" data-cv-level="60"><span class="cm-k">JavaScript</span><span class="cm-v mono">0%</span><span class="cm-track"><i></i></span></div>
+          <div class="cv-meter" data-cv-level="60"><span class="cm-k">Next.js</span><span class="cm-v mono">0%</span><span class="cm-track"><i></i></span></div>
+          <div class="cv-meter" data-cv-level="60"><span class="cm-k">Python</span><span class="cm-v mono">0%</span><span class="cm-track"><i></i></span></div>
+          <div class="cv-meter" data-cv-level="60"><span class="cm-k">Bootstrap</span><span class="cm-v mono">0%</span><span class="cm-track"><i></i></span></div>
+          <div class="cv-meter" data-cv-level="60"><span class="cm-k" data-i18n="cv.skill.responsive">Responsive design</span><span class="cm-v mono">0%</span><span class="cm-track"><i></i></span></div>
+          <div class="cv-meter" data-cv-level="40"><span class="cm-k">Scrum</span><span class="cm-v mono">0%</span><span class="cm-track"><i></i></span></div>
+        </div>
+      </section>
+
+      <!-- ---------- 04 · CERTIFICATES ---------- -->
+      <section class="cv-sec" id="cvSecCerts" data-cv-num="04">
+        <h3 class="cv-sec-title" data-cv-split data-i18n="cv.certs.title">Certificates <span class="it">earned.</span></h3>
+
+        <div class="cv-certs">
+          <article class="cv-cert" data-cv-cert>
+            <span class="cc-date mono" data-cv-scramble data-i18n="cv.cert.d1">mar 2023</span>
+            <h4 class="cc-name">Front-end Frameworks</h4>
+            <span class="cc-seal" aria-hidden="true"></span>
+          </article>
+          <article class="cv-cert" data-cv-cert>
+            <span class="cc-date mono" data-cv-scramble data-i18n="cv.cert.d2">sep 2022</span>
+            <h4 class="cc-name">JavaScript Pro</h4>
+            <span class="cc-seal" aria-hidden="true"></span>
+          </article>
+          <article class="cv-cert" data-cv-cert>
+            <span class="cc-date mono" data-cv-scramble data-i18n="cv.cert.d3">mar 2022</span>
+            <h4 class="cc-name">CSS Pro</h4>
+            <span class="cc-seal" aria-hidden="true"></span>
+          </article>
+          <article class="cv-cert" data-cv-cert>
+            <span class="cc-date mono" data-cv-scramble data-i18n="cv.cert.d4">feb 2022</span>
+            <h4 class="cc-name">HTML Pro</h4>
+            <span class="cc-seal" aria-hidden="true"></span>
+          </article>
+          <article class="cv-cert" data-cv-cert>
+            <span class="cc-date mono" data-cv-scramble data-i18n="cv.cert.d5">nov 2021</span>
+            <h4 class="cc-name">Database PDO</h4>
+            <span class="cc-seal" aria-hidden="true"></span>
+          </article>
+        </div>
+      </section>
+
+      <!-- ---------- 05 · LANGUAGES & INTERESTS ---------- -->
+      <section class="cv-sec" id="cvSecExtra" data-cv-num="05">
+        <h3 class="cv-sec-title" data-cv-split data-i18n="cv.extra.title">Languages <span class="it">&amp; interests.</span></h3>
+
+        <div class="cv-extra-grid">
+          <div class="cv-block" data-cv-item>
+            <div class="cb-k mono" data-i18n="cv.extra.languages">Languages</div>
+            <ul class="cb-list">
+              <li><span data-i18n="cv.lang.nl">Dutch</span><span class="cb-meta mono" data-i18n="cv.lang.nl.lvl">Native</span></li>
+              <li><span data-i18n="cv.lang.en">English</span><span class="cb-meta mono" data-i18n="cv.lang.en.lvl">Fluent</span></li>
+            </ul>
+          </div>
+          <div class="cv-block" data-cv-item>
+            <div class="cb-k mono" data-i18n="cv.extra.interests">Interests</div>
+            <ul class="cb-list">
+              <li><span data-i18n="cv.int.programming">Programming</span></li>
+              <li><span data-i18n="cv.int.webdesign">Web design</span></li>
+              <li><span data-i18n="cv.int.gaming">Gaming</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="cv-outro">
+          <p class="cv-outro-copy" data-cv-fade data-i18n="cv.outro">Want the paper version, or the whole story over a call?</p>
+          <div class="cv-outro-row">
+            <a class="cv-btn" id="cvDownload2" href="#" data-magnet>
+              <span data-i18n="cv.download">Download PDF</span>
+              <span aria-hidden="true">↓</span>
+            </a>
+            <button class="cv-btn cv-btn-ghost" type="button" id="cvToContact" data-magnet>
+              <span data-i18n="cv.outro.contact">Get in touch</span>
+              <span aria-hidden="true">↗</span>
+            </button>
+          </div>
+          <div class="cv-end mono" data-i18n="cv.end">End of dossier — KMLR 2026</div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
 
 <a href="mailto:kkain25@gmail.com" class="km-fab" data-magnet data-i18n-attr="aria-label:fab.email" aria-label="Email me">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="m3 7 9 6 9-6"/></svg>

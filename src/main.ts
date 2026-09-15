@@ -19,6 +19,7 @@ import {
 } from './modules/nav';
 import { initLang } from './modules/lang';
 import { initContactForm, initContactReveal } from './modules/contact';
+import { initCv } from './modules/cv';
 import { initIdleAnimations } from './modules/idle';
 
 // Resolved through Vite rather than written as a bare string. The bare
@@ -60,6 +61,9 @@ function boot(): void {
   initGallery(isTouch);
   initContactReveal();
   initIdleAnimations();
+  // After initLang: the dossier splits its headings per character on
+  // reveal, and it should split the language actually on screen.
+  initCv(isTouch, reduceMotion);
 
   if (!isDesktop) {
     const heroPhoto = document.querySelector('.hero-photo-wrap');
