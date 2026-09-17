@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#f4f3ef" />
+<title data-i18n="meta.title">Kain Mckancy La Reine — Creative Developer in Amsterdam</title>
+
+<!-- Theme, before first paint. Deferring this to the module bundle meant a
+     dark-mode visitor got a full white flash on every load. Keep the key
+     in step with THEME_KEY in src/modules/nav.ts. -->
+<script>
+  (function () {
+    try {
+      var saved = localStorage.getItem('kmlr-theme');
+      var dark = saved ? saved === 'dark'
+                       : window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (dark) {
+        document.documentElement.classList.add('theme-dark');
+        document.addEventListener('DOMContentLoaded', function () {
+          document.body.classList.add('dark');
+        });
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.content = '#0d0d0d';
+      }
+    } catch (e) { /* private mode — the page just starts light */ }
+  })();
+
+  /* Refresh always starts at the top, and nothing scrolls while the
+     preloader is up.
+
+     Both have to happen here rather than in the bundle. The browser
+     restores the old scroll offset before any module runs, so by the time
+     boot() executed you were already parked mid-page behind the
+     preloader; and the scroll lock has to be in force from the first
+     frame, not from whenever the JS finishes downloading. */
+  (function () {
+    try { history.scrollRestoration = 'manual'; } catch (e) { /* older browsers */ }
+
+    if (!document.getElementById || !document.querySelector) return;
+    var root = document.documentElement;
+    root.classList.add('is-preloading');
+
+    var unlock = function () { root.classList.remove('is-preloading'); };
+
+    /* Failsafe: if the bundle never runs — blocked script, network drop —
+       the page must not be left permanently unscrollable. */
+    setTimeout(unlock, 8000);
+
+    /* A #hash is someone deep-linking to a section on purpose, so that
+       one case still gets to land where it points. Everything else — a
+       plain load, a Cmd+R from halfway down — starts at the top. */
+    var toTop = function () { if (!location.hash) window.scrollTo(0, 0); };
+
+    window.addEventListener('DOMContentLoaded', function () {
+      if (!document.getElementById('preloader')) unlock();
+      toTop();
+    });
+    window.addEventListener('load', toTop);
+  })();
+</script>
+<meta name="description" data-i18n-attr="content:meta.description" content="Portfolio of Kain Mckancy La Reine, a creative developer from Amsterdam building cinematic, motion-driven websites with React, GSAP and Three.js. See live client work: TuinToppersPro, Wildcore Retreats, KM.dev, TJEZ Photography and La Reine Coaching." />
+<meta name="author" content="Kain Mckancy La Reine" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://kainmckancylareine.github.io/Mckancy.mc/" />
+
+<link rel="icon" href="./build/favicon-DZ8tlC3c.svg" type="image/svg+xml" />
+<link rel="alternate icon" href="./build/favicon-DZ8tlC3c.svg" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Kain Mckancy La Reine" />
+<meta property="og:title" data-i18n-attr="content:meta.og.title" content="Kain Mckancy La Reine — Creative Developer in Amsterdam" />
+<meta property="og:description" data-i18n-attr="content:meta.og.description" content="Cinematic, motion-driven websites — built with React, GSAP and Three.js. Live client work for TuinToppersPro, Wildcore Retreats, KM.dev, TJEZ Photography and La Reine Coaching." />
+<meta property="og:url" content="https://kainmckancylareine.github.io/Mckancy.mc/" />
+<meta property="og:image" content="https://kainmckancylareine.github.io/Mckancy.mc/assets/kain.jpg" />
+<meta property="og:locale" content="en_US" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" data-i18n-attr="content:meta.og.title" content="Kain Mckancy La Reine — Creative Developer in Amsterdam" />
+<meta name="twitter:description" data-i18n-attr="content:meta.og.description" content="Cinematic, motion-driven websites — built with React, GSAP and Three.js. Live client work for TuinToppersPro, Wildcore Retreats, KM.dev, TJEZ Photography and La Reine Coaching." />
+<meta name="twitter:image" content="https://kainmckancylareine.github.io/Mckancy.mc/assets/kain.jpg" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://kainmckancylareine.github.io/Mckancy.mc/#person",
+      "name": "Kain Mckancy La Reine",
+      "jobTitle": "Creative Developer",
+      "url": "https://kainmckancylareine.github.io/Mckancy.mc/",
+      "image": "https://kainmckancylareine.github.io/Mckancy.mc/assets/kain.jpg",
+      "email": "mailto:kkain25@gmail.com",
+      "address": { "@type": "PostalAddress", "addressLocality": "Amsterdam", "addressCountry": "NL" },
+      "alumniOf": { "@type": "EducationalOrganization", "name": "Bit Academy Amsterdam" },
+      "sameAs": [
+        "https://www.linkedin.com/in/kain-mckancy",
+        "https://github.com/KainMckancyLaReine"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://kainmckancylareine.github.io/Mckancy.mc/#website",
+      "url": "https://kainmckancylareine.github.io/Mckancy.mc/",
+      "name": "Kain Mckancy La Reine — Creative Developer",
+      "description": "Portfolio of a creative developer from Amsterdam building cinematic, motion-driven web experiences.",
+      "author": { "@id": "https://kainmckancylareine.github.io/Mckancy.mc/#person" },
+      "inLanguage": "en"
+    }
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="./build/index-DDd2eEJu.js"></script>
+  <link rel="stylesheet" crossorigin href="./build/index-BTLUtTKp.css">
+</head>
+<body class="grain">
+
+
+<!-- Cursor -->
+<div class="cursor-ring" id="cursorRing"><span class="cursor-label" id="cursorLabel"></span></div>
+<div class="cursor-dot" id="cursorDot"></div>
+
+<!-- ============ PRELOADER — clean modern ============ -->
+<div id="preloader" aria-hidden="true">
+  <div class="pre-meta pre-meta-tl">
+    <span class="blink"></span>
+    <span>Kain Mckancy La Reine</span>
+  </div>
+  <div class="pre-meta pre-meta-tr">Index 2026 / Portfolio</div>
+  <div class="pre-meta pre-meta-bl" data-i18n="pre.loading">Loading the experience</div>
+  <div class="pre-meta pre-meta-br">Amsterdam · NL</div>
+
+  <div class="pre-stage">
+    <div class="pre-name" id="preName">
+      <span class="pn-line"><span class="word">Kain</span></span>
+      <span class="pn-line"><span class="word">Mckancy</span></span>
+      <span class="pn-line"><span class="word it">La Reine<span class="dot">.</span></span></span>
+    </div>
+    <div class="pre-words" id="preWords">
+      <span class="pre-word" data-w="0"><span class="em">Design</span> · Motion · Code</span>
+      <span class="pre-word" data-w="1" data-i18n="pre.crafted">Crafted in <span class="em">Amsterdam</span></span>
+    </div>
+  </div>
+
+  <div class="pre-aperture" id="preAperture">
+    <div class="ap-top"></div>
+    <div class="ap-bot"></div>
+  </div>
+</div>
+
+<!-- ============ NAV ============ -->
+<nav id="mainNav">
+  <a href="#hero" class="nav-logo mono" data-magnet>Kain Mckancy <span class="dot">·</span> KMLR</a>
+  <ul class="nav-menu mono">
+    <li><a href="#about" data-magnet data-i18n="nav.about">About</a></li>
+    <li><a href="#skills" data-magnet data-i18n="nav.skills">Skills</a></li>
+    <li><a href="#worlds" data-magnet data-i18n="nav.work">Work</a></li>
+    <li><a href="#gallery-section" data-magnet data-i18n="nav.gallery">Gallery</a></li>
+    <li><a href="#contact" data-magnet data-i18n="nav.contact">Contact</a></li>
+    <!-- Not an anchor: the CV is a fullscreen overlay, not a section of the
+         page, so this has to be a button — see src/modules/cv.ts. -->
+    <li><button class="nav-cv" type="button" data-cv-open data-magnet><span data-i18n="nav.cv">CV</span><i aria-hidden="true"></i></button></li>
+  </ul>
+  <div class="nav-controls">
+    <!-- Language switch — see src/modules/lang.ts for the shuffle animation. -->
+    <button class="lang-switch mono" id="langSwitch" type="button" data-lang="en" data-magnet
+            aria-label="Schakel over naar Nederlands" title="Schakel over naar Nederlands">
+      <span class="ls-body" aria-hidden="true">
+        <span class="ls-thumb"></span>
+        <span class="ls-slot" data-ls="nl">NL</span>
+        <span class="ls-slot" data-ls="en">EN</span>
+        <span class="ls-scan"></span>
+      </span>
+    </button>
+    <!-- Lives outside the button on purpose: an aria-label on the button
+         overrides any text inside it, so this status was never announced
+         while it sat in there. As a sibling live region it is. -->
+    <span class="sr-only" id="langSwitchState" role="status" aria-live="polite">English</span>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" data-magnet data-i18n-attr="aria-label:nav.theme" aria-label="Toggle dark mode">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+    </button>
+    <div class="nav-time mono" id="navTime">— · —</div>
+  </div>
+  <button class="nav-mobile-toggle" id="navToggle" type="button" aria-expanded="false"
+          aria-controls="mobileDrawer" data-i18n-attr="aria-label:nav.menu" aria-label="Open menu"><span></span><span></span></button>
+</nav>
+
+<div id="mobileDrawer">
+  <a href="#about" data-drawer-link data-i18n="nav.about">About</a>
+  <a href="#skills" data-drawer-link data-i18n="nav.skills">Skills</a>
+  <a href="#worlds" data-drawer-link data-i18n="nav.work">Work</a>
+  <a href="#gallery-section" data-drawer-link data-i18n="nav.gallery">Gallery</a>
+  <a href="#contact" data-drawer-link data-i18n="nav.contact">Contact</a>
+  <button class="drawer-cv" type="button" data-cv-open data-drawer-link><span data-i18n="nav.cv">CV</span></button>
+</div>
+
+<!-- ============ HERO — clean ============ -->
+<section id="hero" class="slide">
+  <div class="hero-glow" id="heroGlow" aria-hidden="true"></div>
+  <div class="hero-top container-x">
+    <span>Index 01 / Portfolio 2026</span>
+    <span>Amsterdam — NL</span>
+  </div>
+
+  <div class="hero-grid container-x">
+    <div>
+      <h1 class="hero-title" data-i18n="hero.title">
+        <span class="line"><span class="word">Not</span> <span class="word">just</span></span>
+        <span class="line"><span class="word it" style="color:var(--orange);">websites.</span></span>
+        <span class="line"><span class="word">Digital</span> <span class="word">experiences</span></span>
+        <span class="line"><span class="word it" style="color:var(--orange);">in motion.</span></span>
+      </h1>
+
+      <div class="hero-cta-row">
+        <a href="#worlds" class="hero-cta" data-magnet>
+          <span data-i18n="hero.cta.work">See the work</span>
+          <span>→</span>
+        </a>
+        <a href="#contact" class="hero-cta-ghost" data-magnet>Contact ↗</a>
+        <button class="hero-cta-ghost hero-cta-cv" type="button" data-cv-open data-magnet>
+          <span data-i18n="hero.cta.cv">View CV</span> <span aria-hidden="true">↗</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="hero-photo-wrap" id="heroPhotoWrap">
+      <div class="photo-bracket b-tl"></div>
+      <div class="photo-bracket b-tr"></div>
+      <div class="photo-bracket b-bl"></div>
+      <div class="photo-bracket b-br"></div>
+      <div class="photo-plate" id="heroPhotoPlate">
+        <div class="pp-label">
+          <span class="pp-name">Kain Mckancy La Reine</span>
+          <span class="pp-meta">2026<br/>AMS · NL</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-bottom container-x">
+    <div>
+      <span class="lbl" data-i18n="hero.lbl.role">Role</span>
+      <span class="val">Creative <span class="it">Developer</span></span>
+    </div>
+    <div>
+      <span class="lbl" data-i18n="hero.lbl.based">Based</span>
+      <span class="val">Amsterdam, <span class="it">NL</span></span>
+    </div>
+    <div>
+      <span class="lbl" data-i18n="hero.lbl.studied">Studied</span>
+      <span class="val">Bit Academy, <span class="it">Amsterdam</span></span>
+    </div>
+    <div>
+      <span class="lbl" data-i18n="hero.lbl.status">Status</span>
+      <span class="val" data-i18n="hero.val.status">Available <span class="it">2026</span></span>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="line"></div>
+  </div>
+</section>
+
+<!-- ============ DRAMATIC TRANSITION ============ -->
+<section id="transition" class="slide">
+  <!-- Layered moving background — really makes you feel like you're moving -->
+  <div class="trans-motion" aria-hidden="true">
+    <div class="tm-grid-top"></div>
+    <div class="tm-grid"></div>
+    <div class="tm-orb tm-orb-a"></div>
+    <div class="tm-orb tm-orb-b"></div>
+    <div class="tm-orb tm-orb-c"></div>
+    <div class="tm-vignette"></div>
+  </div>
+
+  <div class="trans-bg-stripes"></div>
+  <div class="trans-eyebrow" data-i18n="chapter.02">Chapter 02 — Origin</div>
+  <div class="trans-coords">N 52.37° / E 4.89°</div>
+
+  <div class="trans-content">
+    <h2 class="trans-h" data-i18n="trans.title">
+      <span class="line"><span class="word">I make</span></span>
+      <span class="line"><span class="word">websites</span></span>
+      <span class="line"><span class="word it">that move.</span></span>
+    </h2>
+  </div>
+
+  <div class="trans-footer">
+    <div class="credit" data-i18n="trans.credit"><span class="arrow">↘</span><span>Scroll into <span class="em">my world.</span></span></div>
+    <div>Kain Mckancy La Reine · Index 2026</div>
+  </div>
+</section>
+
+<!-- ============ TICKER ============ -->
+<div class="ticker">
+  <div class="ticker-track" id="ticker1">
+    <span class="it">React</span><span class="dot">/</span>
+    <span>Next.js</span><span class="dot">/</span>
+    <span class="it">Three.js</span><span class="dot">/</span>
+    <span>Bootstrap</span><span class="dot">/</span>
+    <span class="it">Gsap</span><span class="dot">/</span>
+    <span>Tailwind</span><span class="dot">/</span>
+    <span class="it">JavaScript</span><span class="dot">/</span>
+    <span>Python</span><span class="dot">/</span>
+    <span class="it">Css</span><span class="dot">/</span>
+    <span>Full-stack-Dev</span><span class="dot">/</span>
+  </div>
+</div>
+
+<!-- ============ ABOUT ============ -->
+<section id="about" class="slide section-pad">
+  <div class="container-x">
+    <div class="eyebrow" data-i18n="chapter.02">Chapter 02 — Origin</div>
+    <div class="about-grid">
+      <div>
+        <h2 class="about-title" data-i18n="about.title">A developer<br/><span class="it" style="color:var(--orange);">from the Netherlands.</span></h2>
+        <div class="glass profile-card">
+          <div class="mono" data-i18n="about.profile" style="font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--ink-3);margin-bottom:16px;">Profile</div>
+          <div class="pc-row">
+            <div class="profile-avatar-lg"><span class="fallback">K</span></div>
+            <div>
+              <div style="color:var(--ink);font-size:15px;">Kain Mckancy La Reine</div>
+              <div style="color:var(--ink-3);font-size:13px;margin-top:2px;">22 · Amsterdam · NL</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px;">
+            <div>
+              <div class="mono" style="font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:var(--ink-3);margin-bottom:4px;">Focus</div>
+              <div style="color:var(--ink);font-size:13px;">Full-stack · Motion</div>
+            </div>
+            <div>
+              <div class="mono" data-i18n="hero.lbl.studied" style="font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:var(--ink-3);margin-bottom:4px;">Studied</div>
+              <div style="color:var(--ink);font-size:13px;">Bit Academy, AMS</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="about-body read-reveal" data-cursor-read>
+        <p data-i18n="about.p1">I am <strong>Kain Mckancy La Reine</strong>, an enthusiastic and creative developer from the Netherlands. At 22 years old, I have a deep passion for design, coding, films and art. I love exploring creativity through immersive digital experiences, visual storytelling and modern aesthetics that blend technology with emotion.</p>
+        <p data-i18n="about.p2">Cinema plays a major role in the way I approach creativity. The atmosphere, pacing, lighting and emotional impact of films strongly influence the way I design interfaces and build interactive experiences. I am constantly inspired by fashion, architecture, music and different cultures, translating those inspirations into unique digital worlds.</p>
+        <p data-i18n="about.p3">I recently completed my studies at <strong>Bit Academy in Amsterdam</strong>, where I specialized in software development and evolved into a full stack developer. During this journey, I strengthened both my technical and creative skills, learning how to build modern, scalable and highly interactive digital experiences while continuously pushing myself to grow as a developer and designer.</p>
+        <p data-i18n="about.p4">Beyond development, I enjoy experimenting with motion design, cinematic interactions and futuristic web experiences. I spend much of my free time building websites, refining visual concepts and exploring new creative ideas that challenge the boundaries between design, motion and technology.</p>
+        <div class="about-quote" data-i18n="about.quote">My goal is not simply to create websites, but to craft immersive digital experiences that leave a lasting impression through storytelling, interaction and cinematic motion.</div>
+      </div>
+    </div>
+
+    <!-- KM.dev founder block — photo slot uses kain.jpg until a dedicated photo is supplied -->
+    <div class="km-founder-block">
+      <div class="km-founder-photo" style="background-image:url('./build/kmdev-founder-C5Z9ulW8.webp'); background-position:center 12%;" role="img" data-i18n-attr="aria-label:km.photo.alt" aria-label="Kain Mckancy La Reine celebrating the official founding of KM.dev at the Dutch Chamber of Commerce (KVK)"></div>
+      <div class="km-founder-text">
+        <div class="eyebrow" data-i18n="km.eyebrow">Founder — KM.dev</div>
+        <h3 class="km-founder-title" data-i18n="km.title">Building brand systems <span class="it" style="color:var(--orange);">under my own name.</span></h3>
+        <p data-i18n="km.p1">In 2026 I founded <strong>KM.dev</strong>, a small brand-system studio built on everything I learned shipping TuinToppersPro, Wildcore Retreats and TJEZ Photography — strategy, identity and a working website, delivered as one fixed-price system instead of three separate hand-offs.</p>
+        <p data-i18n="km.p2">It's the same instinct that runs through this whole portfolio: a brand should feel considered in every pixel, not assembled from a template. KM.dev is where I get to build that for other founders, from the first sketch to the site going live.</p>
+        <a href="https://kainmckancylareine.github.io/KM-DEV/index.html" target="_blank" rel="noopener" class="hero-cta-ghost km-founder-cta" data-magnet data-i18n="km.cta">Visit KM.dev ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SKILLS — Chapter 03: the craft reel (pinned + scrubbed) ============ -->
+<section id="skills" class="slide">
+  <div class="craft-stage" id="craftStage">
+    <div class="craft-noise" aria-hidden="true"></div>
+    <div class="craft-inner container-x">
+
+      <div class="craft-head">
+        <div class="eyebrow" data-i18n="chapter.03">Chapter 03 — Craft</div>
+        <h2 class="section-title craft-heading" id="craftHeading" data-i18n="craft.title">What I bring<br/><span class="it" style="color:var(--orange);">to a project.</span></h2>
+        <p class="section-lede craft-lede" data-i18n="craft.lede">Design, motion and code, handled end-to-end — with KM.dev I package it as one fixed-price system for founders who'd rather not juggle three different freelancers.</p>
+      </div>
+
+      <div class="craft-reel">
+
+        <ol class="craft-rail" id="craftRail" aria-hidden="true">
+          <li class="craft-tick" data-t="0"><span class="ct-n">01</span><span class="ct-l">Design</span></li>
+          <li class="craft-tick" data-t="1"><span class="ct-n">02</span><span class="ct-l">Motion</span></li>
+          <li class="craft-tick" data-t="2"><span class="ct-n">03</span><span class="ct-l">Development</span></li>
+          <li class="craft-tick" data-t="3"><span class="ct-n">04</span><span class="ct-l">Brand systems</span></li>
+          <li class="craft-tick" data-t="4"><span class="ct-n">05</span><span class="ct-l">Copywriting</span></li>
+          <li class="craft-tick" data-t="5"><span class="ct-n">06</span><span class="ct-l" data-i18n="craft.6.label">Deployment</span></li>
+          <li class="craft-rail-line"><span id="craftBar"></span></li>
+        </ol>
+
+        <div class="craft-deck" id="craftDeck">
+
+          <article class="craft-frame" data-f="0">
+            <div class="cf-body">
+              <div class="cf-num">01</div>
+              <h3 class="cf-title">Design<span style="color:var(--orange);">.</span></h3>
+              <p class="cf-copy" data-i18n="craft.1.copy">Interfaces shaped by cinema — pacing, lighting and atmosphere translated into layout, type and color.</p>
+              <div class="cf-tags"><span>Art direction</span><span data-i18n="tag.typesystems">Type systems</span><span>Figma</span></div>
+            </div>
+            <div class="cf-visual cf-v-design" aria-hidden="true">
+              <span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span>
+            </div>
+          </article>
+
+          <article class="craft-frame" data-f="1">
+            <div class="cf-body">
+              <div class="cf-num">02</div>
+              <h3 class="cf-title">Motion<span style="color:var(--orange);">.</span></h3>
+              <p class="cf-copy" data-i18n="craft.2.copy">GSAP-driven interaction that earns its place — every transition tells part of the story, nothing moves just to move.</p>
+              <div class="cf-tags"><span>GSAP</span><span>ScrollTrigger</span><span>Easing</span></div>
+            </div>
+            <div class="cf-visual cf-v-motion" aria-hidden="true">
+              <svg viewBox="0 0 260 170" preserveAspectRatio="xMidYMid meet">
+                <path class="cf-path-ghost" d="M14 148 C 74 148, 62 24, 128 24 S 190 148, 246 22" fill="none"/>
+                <path class="cf-path" id="craftPath" d="M14 148 C 74 148, 62 24, 128 24 S 190 148, 246 22" fill="none"/>
+                <circle class="cf-dot" id="craftDot" r="6" cx="14" cy="148"/>
+              </svg>
+              <div class="cf-ease mono">cubic-bezier(.16,1,.3,1)</div>
+            </div>
+          </article>
+
+          <article class="craft-frame" data-f="2">
+            <div class="cf-body">
+              <div class="cf-num">03</div>
+              <h3 class="cf-title">Development<span style="color:var(--orange);">.</span></h3>
+              <p class="cf-copy" data-i18n="craft.3.copy">Full-stack builds in React and TypeScript, shipped with modern tooling — fast, accessible and built to actually go live.</p>
+              <div class="cf-tags"><span>TypeScript</span><span>React</span><span>Vite</span></div>
+            </div>
+            <div class="cf-visual cf-v-code mono" aria-hidden="true">
+              <div class="cf-code-line"><i>const</i> craft <i>=</i> <b>{</b></div>
+              <div class="cf-code-line indent">design<i>:</i> <s>'systematic'</s><i>,</i></div>
+              <div class="cf-code-line indent">motion<i>:</i> <s>'purposeful'</s><i>,</i></div>
+              <div class="cf-code-line indent">ship<i>:</i> <b>()</b> <i>=&gt;</i> <s>'live'</s><i>,</i></div>
+              <div class="cf-code-line"><b>}</b><span class="cf-caret"></span></div>
+            </div>
+          </article>
+
+          <article class="craft-frame" data-f="3">
+            <div class="cf-body">
+              <div class="cf-num">04</div>
+              <h3 class="cf-title">Brand systems<span style="color:var(--orange);">.</span></h3>
+              <p class="cf-copy" data-i18n="craft.4.copy">Strategy, identity and website as one package — through KM.dev, delivered fixed-price and production-ready.</p>
+              <div class="cf-tags"><span data-i18n="tag.positioning">Positioning</span><span data-i18n="tag.identity">Identity</span><span>Tokens</span></div>
+            </div>
+            <div class="cf-visual cf-v-brand" aria-hidden="true">
+              <div class="cf-swatches"><i style="--c:#c6ff4a"></i><i style="--c:#0d0d0d"></i><i style="--c:#f4f3ef"></i><i style="--c:#2c5fff"></i></div>
+              <div class="cf-lockup serif">KM<span style="color:var(--orange);">.</span>dev</div>
+              <div class="cf-scale">
+                <span style="font-size:34px;">Aa</span><span style="font-size:24px;">Aa</span><span style="font-size:17px;">Aa</span><span style="font-size:12px;">Aa</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="craft-frame" data-f="4">
+            <div class="cf-body">
+              <div class="cf-num">05</div>
+              <h3 class="cf-title">Copywriting<span style="color:var(--orange);">.</span></h3>
+              <p class="cf-copy" data-i18n="craft.5.copy">Words that carry the same tone as the design — clear, confident, and written to actually convert.</p>
+              <div class="cf-tags"><span>Tone of voice</span><span>NL / EN</span><span data-i18n="tag.conversion">Conversion</span></div>
+            </div>
+            <div class="cf-visual cf-v-copy" aria-hidden="true">
+              <div class="cf-quote serif" data-i18n="craft.5.quote">Not just websites.<br/><span class="it" style="color:var(--orange);">Digital experiences in motion.</span></div>
+              <div class="cf-rules"><span></span><span></span><span></span></div>
+            </div>
+          </article>
+
+          <article class="craft-frame" data-f="5">
+            <div class="cf-body">
+              <div class="cf-num">06</div>
+              <h3 class="cf-title" data-i18n="craft.6.title">Deployment<span style="color:var(--orange);">.</span></h3>
+              <p class="cf-copy" data-i18n="craft.6.copy">From Figma file to live domain — SEO fundamentals, accessibility and performance baked in from day one.</p>
+              <div class="cf-tags"><span>CI / Pages</span><span>SEO</span><span>Core Web Vitals</span></div>
+            </div>
+            <div class="cf-visual cf-v-ship mono" aria-hidden="true">
+              <div class="cf-meter"><span class="cf-meter-l">Performance</span><i><b style="--w:98%"></b></i><span class="cf-meter-v">98</span></div>
+              <div class="cf-meter"><span class="cf-meter-l" data-i18n="meter.a11y">Accessibility</span><i><b style="--w:96%"></b></i><span class="cf-meter-v">96</span></div>
+              <div class="cf-meter"><span class="cf-meter-l">SEO</span><i><b style="--w:100%"></b></i><span class="cf-meter-v">100</span></div>
+              <div class="cf-deployed" data-i18n="craft.deployed"><span class="d"></span>Deployed to production</div>
+            </div>
+          </article>
+
+        </div>
+
+        <div class="craft-counter" aria-hidden="true"><span id="craftCounter">01</span><i>/ 06</i></div>
+        <div class="craft-shutter" id="craftShutter" aria-hidden="true"></div>
+      </div>
+
+      <div class="skill-chips" id="skillChips">
+        <span class="skill-chip">TypeScript</span>
+        <span class="skill-chip">React</span>
+        <span class="skill-chip">GSAP</span>
+        <span class="skill-chip">Vite</span>
+        <span class="skill-chip">JavaScript</span>
+        <span class="skill-chip">Figma</span>
+        <span class="skill-chip">CSS</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ SELECTED WORK — sticky stack, one screen per project ============ -->
+<section id="worlds" class="slide">
+  <div class="pw-head container-x">
+    <div class="eyebrow" data-i18n="chapter.04">Chapter 04 — Selected Work</div>
+    <h2 class="section-title" data-i18n="work.title">Live work,<br/><span class="it">not concepts.</span></h2>
+    <p class="section-lede" data-i18n="work.lede">Five projects shipped between 2024 and 2026 — one screen each, straight from the live domain.</p>
+    <div class="pw-hint" aria-hidden="true"><span class="pw-hint-rail"><i></i></span><span class="pw-hint-t" data-i18n="work.hint">Scroll — the stack builds itself</span></div>
+  </div>
+
+  <div class="pw-stack" id="projectsList">
+    <div class="pw-rail" aria-hidden="true">
+      <div class="pw-rail-in">
+        <div class="pw-rail-track"><span class="pw-rail-fill"></span></div>
+        <ol class="pw-rail-list">
+          <li data-rail="01" style="--pa: #5ed07a;"><b>01</b><span>TuinToppersPro</span></li>
+          <li data-rail="02" style="--pa: #e2654a;"><b>02</b><span>Wildcore Retreats</span></li>
+          <li data-rail="03" style="--pa: #c6ff4a;"><b>03</b><span>KM.dev</span></li>
+          <li data-rail="04" style="--pa: #6fb4dd;"><b>04</b><span>TJEZ Photography</span></li>
+          <li data-rail="05" style="--pa: #d3b26a;"><b>05</b><span>La Reine Coaching</span></li>
+        </ol>
+      </div>
+    </div>
+
+    <article class="pw-item" data-proj="01" style="--pa: #5ed07a; --ar: 2.0739; --i: 0;">
+      <div class="pw-card">
+        <span class="pw-aura" aria-hidden="true"></span>
+        <span class="pw-edge" aria-hidden="true"></span>
+        <span class="pw-veil" aria-hidden="true"></span>
+        <div class="pw-inner">
+          <div class="pw-copy">
+            <div class="pw-idx">
+              <span class="pw-idx-n" data-num="01">01</span>
+              <span class="pw-idx-r">/ 05</span>
+              <span class="pw-idx-y">2025</span>
+            </div>
+            <p class="pw-kicker" data-i18n="work.01.kicker">Local business — Garden care</p>
+            <h3 class="pw-title">
+              <span class="pw-l"><span>TuinToppers</span></span>
+              <span class="pw-l"><span class="it">Pro.</span></span>
+            </h3>
+            <p class="pw-lede" data-i18n="work.01.lede">A garden-maintenance and pressure-washing brand in Flevoland. Fixed-price services, subscriptions and a before/after slider that sells the work at a glance.</p>
+            <ul class="pw-tags"><li>HTML/CSS</li><li data-i18n="tag.beforeafter">Before / After</li><li data-i18n="tag.booking">Booking</li></ul>
+            <a class="pw-cta" href="https://tuintopperpro.nl/" target="_blank" rel="noopener" data-magnet>
+              <span class="pw-cta-r"></span>
+              <span class="pw-cta-t">tuintopperpro.nl</span>
+              <i class="pw-cta-a">↗</i>
+            </a>
+          </div>
+          <div class="pw-visual">
+            <a class="pw-frame" href="https://tuintopperpro.nl/" target="_blank" rel="noopener" data-cursor-label="Open site" data-i18n-attr="data-cursor-label:work.opensite,aria-label:work.01.aria" aria-label="Open TuinToppersPro in a new tab">
+              <div class="pw-chrome">
+                <span class="pw-dots"><i></i><i></i><i></i></span>
+                <span class="pw-url"><svg class="pw-lock" viewBox="0 0 16 16" width="9" height="9" aria-hidden="true"><path d="M4 7V5a4 4 0 1 1 8 0v2h.5A1.5 1.5 0 0 1 14 8.5v5A1.5 1.5 0 0 1 12.5 15h-9A1.5 1.5 0 0 1 2 13.5v-5A1.5 1.5 0 0 1 3.5 7H4Zm1.5 0h5V5a2.5 2.5 0 0 0-5 0v2Z" fill="currentColor"/></svg><span class="pw-url-t"><i>https://</i>tuintopperpro.nl<i></i></span></span>
+                <span class="pw-status"><i class="pw-live"></i>Live</span>
+              </div>
+              <div class="pw-shot">
+                <img class="pw-img"
+                     src="./build/tuintopperpro-1920-DTARsF8T.webp"
+                     srcset="./build/tuintopperpro-1200-Dc7tLS73.webp 1200w, ./build/tuintopperpro-1920-DTARsF8T.webp 1920w"
+                     sizes="(min-width: 1100px) 56vw, 92vw"
+                     width="2864" height="1381" loading="lazy" decoding="async"
+                     alt="Homepage of tuintopperpro.nl — headline “Dé specialist voor uw tuin & oprit” beside a photo of a freshly maintained garden with a €200 price badge." />
+                <span class="pw-sheen" aria-hidden="true"></span>
+                <span class="pw-scan" aria-hidden="true"></span>
+              </div>
+              <span class="pw-open"><span class="pw-open-t" data-i18n="work.opensite">Open site</span><i class="pw-open-a">↗</i></span>
+            </a>
+            <div class="pw-caption">
+              <span class="pw-cap-k" data-i18n="work.01.capk">Landing page</span>
+              <span class="pw-cap-t">Dé specialist<em>.</em></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="pw-item" data-proj="02" style="--pa: #e2654a; --ar: 2.0779; --i: 1;">
+      <div class="pw-card">
+        <span class="pw-aura" aria-hidden="true"></span>
+        <span class="pw-edge" aria-hidden="true"></span>
+        <span class="pw-veil" aria-hidden="true"></span>
+        <div class="pw-inner">
+          <div class="pw-copy">
+            <div class="pw-idx">
+              <span class="pw-idx-n" data-num="02">02</span>
+              <span class="pw-idx-r">/ 05</span>
+              <span class="pw-idx-y">2025</span>
+            </div>
+            <p class="pw-kicker" data-i18n="work.02.kicker">Travel — Trailrun retreat</p>
+            <h3 class="pw-title">
+              <span class="pw-l"><span>Wildcore</span></span>
+              <span class="pw-l"><span class="it">Retreats.</span></span>
+            </h3>
+            <p class="pw-lede" data-i18n="work.02.lede">A trailrun &amp; hike retreat brand in Spain’s Sierra Calderona. Editorial pacing, real route stats and a villa built around one idea: not performing — experiencing.</p>
+            <ul class="pw-tags"><li>HTML/CSS</li><li>GSAP</li><li data-i18n="tag.bookingform">Booking form</li></ul>
+            <a class="pw-cta" href="https://wildcore-retreats.nl/" target="_blank" rel="noopener" data-magnet>
+              <span class="pw-cta-r"></span>
+              <span class="pw-cta-t">wildcore-retreats.nl</span>
+              <i class="pw-cta-a">↗</i>
+            </a>
+          </div>
+          <div class="pw-visual">
+            <a class="pw-frame" href="https://wildcore-retreats.nl/" target="_blank" rel="noopener" data-cursor-label="Open site" data-i18n-attr="data-cursor-label:work.opensite,aria-label:work.02.aria" aria-label="Open Wildcore Retreats in a new tab">
+              <div class="pw-chrome">
+                <span class="pw-dots"><i></i><i></i><i></i></span>
+                <span class="pw-url"><svg class="pw-lock" viewBox="0 0 16 16" width="9" height="9" aria-hidden="true"><path d="M4 7V5a4 4 0 1 1 8 0v2h.5A1.5 1.5 0 0 1 14 8.5v5A1.5 1.5 0 0 1 12.5 15h-9A1.5 1.5 0 0 1 2 13.5v-5A1.5 1.5 0 0 1 3.5 7H4Zm1.5 0h5V5a2.5 2.5 0 0 0-5 0v2Z" fill="currentColor"/></svg><span class="pw-url-t"><i>https://</i>wildcore-retreats.nl<i></i></span></span>
+                <span class="pw-status"><i class="pw-live"></i>Live</span>
+              </div>
+              <div class="pw-shot">
+                <img class="pw-img"
+                     src="./build/wildcore-1920-CcxOS38H.webp"
+                     srcset="./build/wildcore-1200-D-Do2gNC.webp 1200w, ./build/wildcore-1920-CcxOS38H.webp 1920w"
+                     sizes="(min-width: 1100px) 56vw, 92vw"
+                     width="2880" height="1386" loading="lazy" decoding="async"
+                     alt="Homepage of wildcore-retreats.nl — a trailrunner in an orange jacket on a forest path behind the headline “Trailrunnen, natuur en ontspanning in het hart van de Sierra Calderona”." />
+                <span class="pw-sheen" aria-hidden="true"></span>
+                <span class="pw-scan" aria-hidden="true"></span>
+              </div>
+              <span class="pw-open"><span class="pw-open-t" data-i18n="work.opensite">Open site</span><i class="pw-open-a">↗</i></span>
+            </a>
+            <div class="pw-caption">
+              <span class="pw-cap-k">Sierra Calderona</span>
+              <span class="pw-cap-t">Trailrun retreat<em>.</em></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="pw-item" data-proj="03" style="--pa: #c6ff4a; --ar: 1.6000; --i: 2;">
+      <div class="pw-card">
+        <span class="pw-aura" aria-hidden="true"></span>
+        <span class="pw-edge" aria-hidden="true"></span>
+        <span class="pw-veil" aria-hidden="true"></span>
+        <div class="pw-inner">
+          <div class="pw-copy">
+            <div class="pw-idx">
+              <span class="pw-idx-n" data-num="03">03</span>
+              <span class="pw-idx-r">/ 05</span>
+              <span class="pw-idx-y">2026</span>
+            </div>
+            <p class="pw-kicker" data-i18n="work.03.kicker">Brand system — My own studio</p>
+            <h3 class="pw-title">
+              <span class="pw-l"><span>KM</span></span>
+              <span class="pw-l"><span class="it">.dev.</span></span>
+            </h3>
+            <p class="pw-lede" data-i18n="work.03.lede">My own studio — strategy, identity and website delivered as one fixed-price system for founders ready to scale. Case studies for Wildcore, TuinToppersPro and this portfolio.</p>
+            <ul class="pw-tags"><li data-i18n="tag.brandstrategy">Brand strategy</li><li>Design system</li><li>Copywriting</li></ul>
+            <a class="pw-cta" href="https://kainmckancylareine.github.io/KM-DEV/index.html" target="_blank" rel="noopener" data-magnet>
+              <span class="pw-cta-r"></span>
+              <span class="pw-cta-t">km.dev</span>
+              <i class="pw-cta-a">↗</i>
+            </a>
+          </div>
+          <div class="pw-visual">
+            <a class="pw-frame" href="https://kainmckancylareine.github.io/KM-DEV/index.html" target="_blank" rel="noopener" data-cursor-label="Open site" data-i18n-attr="data-cursor-label:work.opensite,aria-label:work.03.aria" aria-label="Open KM.dev in a new tab">
+              <div class="pw-chrome">
+                <span class="pw-dots"><i></i><i></i><i></i></span>
+                <span class="pw-url"><svg class="pw-lock" viewBox="0 0 16 16" width="9" height="9" aria-hidden="true"><path d="M4 7V5a4 4 0 1 1 8 0v2h.5A1.5 1.5 0 0 1 14 8.5v5A1.5 1.5 0 0 1 12.5 15h-9A1.5 1.5 0 0 1 2 13.5v-5A1.5 1.5 0 0 1 3.5 7H4Zm1.5 0h5V5a2.5 2.5 0 0 0-5 0v2Z" fill="currentColor"/></svg><span class="pw-url-t"><i></i>km.dev<i>/brand-system</i></span></span>
+                <span class="pw-status"><i class="pw-live"></i>Studio</span>
+              </div>
+              <div class="pw-shot">
+                <img class="pw-img"
+                     src="./build/kmdev-1920-Cv6vcF8q.webp"
+                     srcset="./build/kmdev-1200-Cx2qSFsy.webp 1200w, ./build/kmdev-1920-Cv6vcF8q.webp 1920w"
+                     sizes="(min-width: 1100px) 56vw, 92vw"
+                     width="2880" height="1800" loading="lazy" decoding="async"
+                     alt="Homepage of KM.dev — headline “Het brand system dat jouw bedrijf naar het volgende niveau tilt” beside a floating stack of client website cards." />
+                <span class="pw-sheen" aria-hidden="true"></span>
+                <span class="pw-scan" aria-hidden="true"></span>
+              </div>
+              <span class="pw-open"><span class="pw-open-t" data-i18n="work.opensite">Open site</span><i class="pw-open-a">↗</i></span>
+            </a>
+            <div class="pw-caption">
+              <span class="pw-cap-k">Brand system</span>
+              <span class="pw-cap-t" data-i18n="work.03.capt">Strategy &amp; identity<em>.</em></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="pw-item" data-proj="04" style="--pa: #6fb4dd; --ar: 1.6000; --i: 3;">
+      <div class="pw-card">
+        <span class="pw-aura" aria-hidden="true"></span>
+        <span class="pw-edge" aria-hidden="true"></span>
+        <span class="pw-veil" aria-hidden="true"></span>
+        <div class="pw-inner">
+          <div class="pw-copy">
+            <div class="pw-idx">
+              <span class="pw-idx-n" data-num="04">04</span>
+              <span class="pw-idx-r">/ 05</span>
+              <span class="pw-idx-y">2024</span>
+            </div>
+            <p class="pw-kicker" data-i18n="work.04.kicker">Photography — Portfolio</p>
+            <h3 class="pw-title">
+              <span class="pw-l"><span>TJEZ</span></span>
+              <span class="pw-l"><span class="it">Photography.</span></span>
+            </h3>
+            <p class="pw-lede" data-i18n="work.04.lede">A portfolio for photographer Chesron Salakory — portraits, corporate, lifestyle and architecture. Built image-first on a near-black canvas, so the work does the talking.</p>
+            <ul class="pw-tags"><li>HTML/CSS</li><li>Lenis</li><li data-i18n="nav.gallery">Gallery</li></ul>
+            <a class="pw-cta" href="https://kainmckancylareine.github.io/tjez-photo/index.html" target="_blank" rel="noopener" data-magnet>
+              <span class="pw-cta-r"></span>
+              <span class="pw-cta-t">tjez-photo</span>
+              <i class="pw-cta-a">↗</i>
+            </a>
+          </div>
+          <div class="pw-visual">
+            <a class="pw-frame" href="https://kainmckancylareine.github.io/tjez-photo/index.html" target="_blank" rel="noopener" data-cursor-label="Open site" data-i18n-attr="data-cursor-label:work.opensite,aria-label:work.04.aria" aria-label="Open TJEZ Photography in a new tab">
+              <div class="pw-chrome">
+                <span class="pw-dots"><i></i><i></i><i></i></span>
+                <span class="pw-url"><svg class="pw-lock" viewBox="0 0 16 16" width="9" height="9" aria-hidden="true"><path d="M4 7V5a4 4 0 1 1 8 0v2h.5A1.5 1.5 0 0 1 14 8.5v5A1.5 1.5 0 0 1 12.5 15h-9A1.5 1.5 0 0 1 2 13.5v-5A1.5 1.5 0 0 1 3.5 7H4Zm1.5 0h5V5a2.5 2.5 0 0 0-5 0v2Z" fill="currentColor"/></svg><span class="pw-url-t"><i></i>tjez-photo<i>/structures</i></span></span>
+                <span class="pw-status"><i class="pw-live"></i>Demo</span>
+              </div>
+              <div class="pw-shot">
+                <img class="pw-img"
+                     src="./build/tjez-1920--U-VIPKD.webp"
+                     srcset="./build/tjez-1200-a7H89U6y.webp 1200w, ./build/tjez-1920--U-VIPKD.webp 1920w"
+                     sizes="(min-width: 1100px) 56vw, 92vw"
+                     width="2880" height="1800" loading="lazy" decoding="async"
+                     alt="Structures page of the TJEZ Photography portfolio — a curved glass facade on a near-black canvas beside the headline “Lines and light”." />
+                <span class="pw-sheen" aria-hidden="true"></span>
+                <span class="pw-scan" aria-hidden="true"></span>
+              </div>
+              <span class="pw-open"><span class="pw-open-t" data-i18n="work.opensite">Open site</span><i class="pw-open-a">↗</i></span>
+            </a>
+            <div class="pw-caption">
+              <span class="pw-cap-k" data-i18n="work.04.capk">Architecture</span>
+              <span class="pw-cap-t" data-i18n="work.04.capt">Lines and light<em>.</em></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="pw-item" data-proj="05" style="--pa: #d3b26a; --ar: 1.6000; --i: 4;">
+      <div class="pw-card">
+        <span class="pw-aura" aria-hidden="true"></span>
+        <span class="pw-edge" aria-hidden="true"></span>
+        <span class="pw-veil" aria-hidden="true"></span>
+        <div class="pw-inner">
+          <div class="pw-copy">
+            <div class="pw-idx">
+              <span class="pw-idx-n" data-num="05">05</span>
+              <span class="pw-idx-r">/ 05</span>
+              <span class="pw-idx-y">2026</span>
+            </div>
+            <p class="pw-kicker" data-i18n="work.05.kicker">Coaching — Voice activation</p>
+            <h3 class="pw-title">
+              <span class="pw-l"><span>La Reine</span></span>
+              <span class="pw-l"><span class="it">Coaching.</span></span>
+            </h3>
+            <p class="pw-lede" data-i18n="work.05.lede">A warm, editorial site for voice-activation coach Phaedra La Reine. Serif display type, a soft cream canvas and one clear first step: “Plan je eerste stap”.</p>
+            <ul class="pw-tags"><li>HTML/CSS</li><li data-i18n="tag.editorialtype">Editorial type</li><li>NL / EN</li></ul>
+            <a class="pw-cta" href="https://www.lareinecoaching.nl/" target="_blank" rel="noopener" data-magnet>
+              <span class="pw-cta-r"></span>
+              <span class="pw-cta-t">lareinecoaching.nl</span>
+              <i class="pw-cta-a">↗</i>
+            </a>
+          </div>
+          <div class="pw-visual">
+            <a class="pw-frame" href="https://www.lareinecoaching.nl/" target="_blank" rel="noopener" data-cursor-label="Open site" data-i18n-attr="data-cursor-label:work.opensite,aria-label:work.05.aria" aria-label="Open La Reine Coaching in a new tab">
+              <div class="pw-chrome">
+                <span class="pw-dots"><i></i><i></i><i></i></span>
+                <span class="pw-url"><svg class="pw-lock" viewBox="0 0 16 16" width="9" height="9" aria-hidden="true"><path d="M4 7V5a4 4 0 1 1 8 0v2h.5A1.5 1.5 0 0 1 14 8.5v5A1.5 1.5 0 0 1 12.5 15h-9A1.5 1.5 0 0 1 2 13.5v-5A1.5 1.5 0 0 1 3.5 7H4Zm1.5 0h5V5a2.5 2.5 0 0 0-5 0v2Z" fill="currentColor"/></svg><span class="pw-url-t"><i>https://</i>lareinecoaching.nl<i></i></span></span>
+                <span class="pw-status" data-i18n="work.status.new"><i class="pw-live"></i>New</span>
+              </div>
+              <div class="pw-shot">
+                <img class="pw-img"
+                     src="./build/lareine-1920-Dj-spmw1.webp"
+                     srcset="./build/lareine-1200-CwjK8glR.webp 1200w, ./build/lareine-1920-Dj-spmw1.webp 1920w"
+                     sizes="(min-width: 1100px) 56vw, 92vw"
+                     width="2880" height="1800" loading="lazy" decoding="async"
+                     alt="Homepage of La Reine Coaching — headline “Stop Playing Small. Use your voice.” above a portrait of coach Phaedra La Reine." />
+                <span class="pw-sheen" aria-hidden="true"></span>
+                <span class="pw-scan" aria-hidden="true"></span>
+              </div>
+              <span class="pw-open"><span class="pw-open-t" data-i18n="work.opensite">Open site</span><i class="pw-open-a">↗</i></span>
+            </a>
+            <div class="pw-caption">
+              <span class="pw-cap-k">Homepage</span>
+              <span class="pw-cap-t" data-i18n="work.05.capt">Use your voice<em>.</em></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <div class="pw-tail" aria-hidden="true"></div>
+  </div>
+</section>
+
+<!-- ============ GALLERY — floating frames ============ -->
+<section id="gallery-section" class="slide section-pad-lg">
+  <div class="container-x">
+    <div class="eyebrow" data-i18n="chapter.05">Chapter 05 — Visual Notes</div>
+    <h2 class="section-title" data-i18n="gal.title">Floating<br/><span class="it" style="color:var(--orange);">gallery.</span></h2>
+    <p class="section-lede" data-i18n="gal.lede">Every screen I shipped and every face behind it — drifting, tilting, alive.</p>
+
+    <div class="gallery-grid" id="galleryGrid">
+
+        <div class="gallery-card" data-i="0" data-cursor-label="Kain" style="background-image:url('./build/kain-BY9MEb9v.webp'); background-size:cover; background-position:center 20%; color:#f4f3ee;">
+          <div class="gc-veil"></div>
+          <div class="gc-meta"><div class="gc-num">Frame 001</div><div class="gc-title" data-i18n="gal.01" style="color:#fff;">Self <span class="em">portrait</span></div></div>
+        </div>
+
+        <div class="gallery-card gc-wide" data-i="1" data-cursor-label="TuinToppers" style="background-image:url('./build/tuintopperpro-D24j8sZs.webp'); background-size:cover; background-position:center top; color:#f4f3ee;">
+          <div class="gc-veil"></div>
+          <div class="gc-live"><span class="d"></span><span class="l">Live</span></div>
+          <div class="gc-meta"><div class="gc-num">Frame 002</div><div class="gc-title" style="color:#fff;">TuinToppers<span class="em">Pro</span></div></div>
+        </div>
+
+        <div class="gallery-card gc-wide" data-i="2" data-cursor-label="Wildcore" style="background-image:url('./build/wildcore-DU5AFwzY.webp'); background-size:cover; background-position:center 35%; color:#f4f3ee;">
+          <div class="gc-veil"></div>
+          <div class="gc-live"><span class="d"></span><span class="l">Live</span></div>
+          <div class="gc-meta"><div class="gc-num">Frame 003</div><div class="gc-title" style="color:#fff;">Wildcore <span class="em">Retreats</span></div></div>
+        </div>
+
+        <div class="gallery-card" data-i="3" data-cursor-label="KVK" style="background-image:url('./build/kmdev-founder-CoOd3Jl6.webp'); background-size:cover; background-position:center 18%; color:#f4f3ee;">
+          <div class="gc-veil"></div>
+          <div class="gc-meta"><div class="gc-num">Frame 004</div><div class="gc-title" data-i18n="gal.04" style="color:#fff;">Day <span class="em">one</span></div></div>
+        </div>
+
+        <div class="gallery-card gc-wide" data-i="4" data-cursor-label="KM.dev" style="background-image:url('./build/kmdev-CwtO1U9r.webp'); background-size:cover; background-position:center top; color:#f4f3ee;">
+          <div class="gc-veil"></div>
+          <div class="gc-meta"><div class="gc-num">Frame 005</div><div class="gc-title" style="color:#fff;">KM<span class="em">.dev</span></div></div>
+        </div>
+
+        <div class="gallery-card gc-wide" data-i="5" data-cursor-label="TJEZ" style="background-image:url('./build/tjez-C1IzYk8x.webp'); background-size:cover; background-position:center top; color:#f4f3ee;">
+          <div class="gc-veil"></div>
+          <div class="gc-meta"><div class="gc-num">Frame 006</div><div class="gc-title" style="color:#fff;">TJEZ <span class="em">Photography</span></div></div>
+        </div>
+
+        <div class="gallery-card gc-wide" data-i="6" data-cursor-label="La Reine" style="background-image:url('./build/lareine-B6AJI_4o.webp'); background-size:cover; background-position:center top; color:#f4f3ee;">
+          <div class="gc-veil"></div>
+          <div class="gc-meta"><div class="gc-num">Frame 007</div><div class="gc-title" style="color:#fff;">La Reine <span class="em">Coaching</span></div></div>
+        </div>
+
+        <div class="gallery-card gc-wide" data-i="7" data-cursor-label="Before / After" data-i18n-attr="data-cursor-label:tag.beforeafter" style="background-image:url('./build/tuintopper-projects-C5QZz7mq.webp'); background-size:cover; background-position:center top; color:#f4f3ee;">
+          <div class="gc-veil"></div>
+          <div class="gc-meta"><div class="gc-num">Frame 008</div><div class="gc-title" data-i18n="gal.08" style="color:#fff;">Before &amp; <span class="em">after</span></div></div>
+        </div>
+
+        <div class="gallery-card gc-wide" data-i="8" data-cursor-label="Dates" style="background-image:url('./build/wildcore-dates-yFArbKuE.webp'); background-size:cover; background-position:center top; color:#f4f3ee;">
+          <div class="gc-veil"></div>
+          <div class="gc-meta"><div class="gc-num">Frame 009</div><div class="gc-title" data-i18n="gal.09" style="color:#fff;">Four <span class="em">weekends</span></div></div>
+        </div>
+
+        <div class="gallery-card" data-i="9" data-cursor-label="Kain" style="background-image:url('./build/kain-BY9MEb9v.webp'); background-size:cover; background-position:center 12%; filter:grayscale(90%) contrast(1.05); color:#f4f3ee;">
+          <div class="gc-veil"></div>
+          <div class="gc-meta"><div class="gc-num">Frame 010</div><div class="gc-title" data-i18n="gal.10" style="color:#fff;">Portrait · <span class="em">No.2</span></div></div>
+        </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section id="contact" class="slide">
+  <div class="container-x">
+    <div class="eyebrow" data-i18n="chapter.06">Chapter 06 — Transmission</div>
+    <h2 class="contact-title" data-i18n="contact.title">Let's build<br/>something <span class="it" style="color:var(--orange);">unforgettable.</span></h2>
+
+    <div class="contact-grid">
+      <div style="display:flex; flex-direction:column; gap:30px;">
+        <p data-i18n="contact.lede" style="color:rgba(244,243,238,0.7); font-size:17px; line-height:1.6; max-width:440px;">Tell me about your project, your world, your idea. I respond to every message.</p>
+        <div class="contact-info-block">
+          <div class="lbl" data-i18n="contact.lbl.email">Email</div>
+          <a href="mailto:kkain25@gmail.com" data-magnet>kkain25@gmail.com</a>
+        </div>
+        <div class="contact-info-block">
+          <div class="lbl" data-i18n="contact.lbl.phone">Phone</div>
+          <a href="tel:+31616346033" data-magnet>+31 6 16 34 60 33</a>
+        </div>
+        <div class="contact-info-block">
+          <div class="lbl">Social</div>
+          <div style="display:flex; flex-direction:column; gap:6px; margin-top:6px;">
+            <a href="https://www.linkedin.com/in/kain-mckancy" target="_blank" rel="noopener" data-magnet>LinkedIn ↗</a>
+            <a href="https://github.com/KainMckancyLaReine" target="_blank" rel="noopener" data-magnet>GitHub ↗</a>
+          </div>
+        </div>
+      </div>
+
+      <form class="contact-form-card" id="contactForm">
+        <div class="mono" data-i18n="contact.form.title" style="font-size:10px; letter-spacing:0.25em; text-transform:uppercase; color:rgba(244,243,238,0.5); margin-bottom:18px;">Send a message</div>
+        <label class="sr-only" for="contactName" data-i18n="contact.field.name">Your name</label>
+        <input id="contactName" name="name" type="text" placeholder="Your name" data-i18n-attr="placeholder:contact.field.name" class="input" required autocomplete="name">
+        <label class="sr-only" for="contactEmail" data-i18n="contact.field.email">Your email</label>
+        <input id="contactEmail" name="email" type="email" placeholder="Your email" data-i18n-attr="placeholder:contact.field.email" class="input" required autocomplete="email">
+        <label class="sr-only" for="contactProject" data-i18n="contact.field.project.label">Project or idea</label>
+        <input id="contactProject" name="project" type="text" placeholder="Project · Idea" data-i18n-attr="placeholder:contact.field.project" class="input">
+        <label class="sr-only" for="contactMessage" data-i18n="contact.field.message.label">Your message</label>
+        <textarea id="contactMessage" name="message" rows="4" placeholder="Tell me everything..." data-i18n-attr="placeholder:contact.field.message" class="input" required style="resize:none;"></textarea>
+        <button type="submit" class="btn-paper" data-magnet style="margin-top:24px;">
+          <span data-i18n="contact.submit">Send message →</span>
+        </button>
+        <div id="formStatus" role="status" aria-live="polite" style="text-align:center; color:#f4f3ee; font-size:13px; margin-top:14px; opacity:0; transition:opacity .4s;"></div>
+      </form>
+    </div>
+
+    <div class="footer">
+      <div>© 2026 Kain Mckancy La Reine</div>
+      <div data-i18n="footer.end">End of transmission</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CV — FULLSCREEN DOSSIER OVERLAY ============
+     Opened from the nav / drawer / hero button, animated in src/modules/cv.ts.
+     Lives at the end of the body so nothing on the page can stack above it,
+     and starts `inert` so the twenty-odd focusable nodes inside are out of
+     the tab order until it is actually open. -->
+<div id="cvOverlay" class="cv-overlay" role="dialog" aria-modal="true" aria-labelledby="cvTitle" aria-hidden="true" inert>
+
+  <!-- Atmosphere: veil, aperture blades, grain, drifting orbs, scan line -->
+  <div class="cv-veil" aria-hidden="true"></div>
+  <div class="cv-aperture" aria-hidden="true">
+    <div class="cv-ap cv-ap-top"></div>
+    <div class="cv-ap cv-ap-bot"></div>
+  </div>
+  <div class="cv-grain" aria-hidden="true"></div>
+  <div class="cv-orbs" aria-hidden="true"><span></span><span></span><span></span></div>
+  <div class="cv-scanline" aria-hidden="true"></div>
+
+  <!-- Boot sequence — the state between the click and the dossier.
+       Sits above the aperture blades, so it plays on a closed shutter and
+       the dossier is only revealed once it hands over. See cvboot.ts. -->
+  <div id="cvBoot" class="cv-boot">
+    <div class="cvb-panel" id="cvBootPanel" tabindex="-1">
+      <div class="cvb-head">
+        <span class="cvb-eyebrow mono" data-i18n="cv.boot.eyebrow">Dossier — Kain Mckancy La Reine</span>
+        <span class="cvb-count mono" id="cvBootCount">000</span>
+      </div>
+      <div class="cvb-log" id="cvBootLog" aria-hidden="true"></div>
+      <div class="cvb-status" id="cvBootStatus" role="status" aria-live="polite"></div>
+      <div class="cvb-rail" id="cvBootRail"><i id="cvBootFill"></i></div>
+      <div class="cvb-foot">
+        <span class="cvb-note mono" id="cvBootNote"></span>
+        <span class="cvb-hint mono" id="cvBootHint"><kbd>Esc</kbd><span data-i18n="cv.boot.cancel">cancel</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- The boot lines exist only at runtime, so they have nowhere in the
+       page to be harvested from — this is that place. -->
+  <div class="cvb-dict" hidden aria-hidden="true">
+    <span data-i18n="cv.boot.profile">Preparing profile</span>
+    <span data-i18n="cv.boot.type">Typesetting</span>
+    <span data-i18n="cv.boot.sections">Compiling sections</span>
+    <span data-i18n="cv.boot.verify">Verifying document</span>
+    <span data-i18n="cv.boot.assemble">Assembling dossier</span>
+    <span data-i18n="cv.boot.ready">Ready</span>
+    <span data-i18n="cv.boot.restore">Restoring dossier</span>
+    <span data-i18n="cv.boot.note.nodoc">Document unavailable — opening without the download</span>
+    <span data-i18n="cv.boot.doc.size">PDF · {size}</span>
+  </div>
+
+  <header class="cv-bar">
+    <div class="cv-bar-l mono">
+      <span class="cv-rec" aria-hidden="true"></span>
+      <span class="cv-bar-title" data-i18n="cv.bar">Curriculum Vitae — Kain Mckancy La Reine</span>
+      <!-- The full line has nowhere to go on a phone; this takes over there. -->
+      <span class="cv-bar-short" aria-hidden="true">CV</span>
+    </div>
+    <div class="cv-bar-r">
+      <a class="cv-dl mono" id="cvDownload" href="#" data-magnet>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M4 20h16"/></svg>
+        <span data-i18n="cv.download">Download PDF</span>
+        <span class="cv-dl-sheen" aria-hidden="true"></span>
+      </a>
+      <!-- The nav's language pill is behind the overlay while this is open,
+           and the dossier is the most copy-heavy thing on the site — so it
+           carries its own switch. -->
+      <button class="cv-lang mono" id="cvLang" type="button" data-magnet>NL</button>
+      <button class="cv-close" id="cvClose" type="button" data-magnet data-i18n-attr="aria-label:cv.close" aria-label="Close CV">
+        <span aria-hidden="true"></span><span aria-hidden="true"></span>
+      </button>
+    </div>
+    <div class="cv-progress" aria-hidden="true"><span id="cvProgressBar"></span></div>
+  </header>
+
+  <!-- Section index — rail on the left, chip row on phones -->
+  <nav class="cv-index mono" id="cvIndex" data-i18n-attr="aria-label:cv.index.label" aria-label="CV sections">
+    <button type="button" data-cv-jump="cvSecProfile"><i aria-hidden="true"></i><span data-i18n="cv.idx.profile">Profile</span></button>
+    <button type="button" data-cv-jump="cvSecPath"><i aria-hidden="true"></i><span data-i18n="cv.idx.path">Path</span></button>
+    <button type="button" data-cv-jump="cvSecSkills"><i aria-hidden="true"></i><span data-i18n="cv.idx.skills">Skills</span></button>
+    <button type="button" data-cv-jump="cvSecCerts"><i aria-hidden="true"></i><span data-i18n="cv.idx.certs">Certificates</span></button>
+    <button type="button" data-cv-jump="cvSecExtra"><i aria-hidden="true"></i><span data-i18n="cv.idx.extra">Languages</span></button>
+  </nav>
+
+  <div class="cv-scroll" id="cvScroll" tabindex="-1">
+    <div class="cv-inner">
+
+      <!-- ---------- 01 · PROFILE ---------- -->
+      <section class="cv-sec cv-profile" id="cvSecProfile" data-cv-num="01">
+        <div class="cv-profile-grid">
+
+          <div class="cv-card" id="cvIdCard">
+            <div class="cv-card-glow" aria-hidden="true"></div>
+            <div class="cv-card-photo" style="background-image:url('./build/kain-BY9MEb9v.webp');" role="img" data-i18n-attr="aria-label:cv.photo.alt" aria-label="Portrait of Kain Mckancy La Reine"></div>
+            <div class="cv-card-strip mono">
+              <span>KMLR · 2004</span>
+              <span class="cv-card-dot" aria-hidden="true"></span>
+              <span>AMS — NL</span>
+            </div>
+            <div class="cv-card-corner c-tl" aria-hidden="true"></div>
+            <div class="cv-card-corner c-tr" aria-hidden="true"></div>
+            <div class="cv-card-corner c-bl" aria-hidden="true"></div>
+            <div class="cv-card-corner c-br" aria-hidden="true"></div>
+          </div>
+
+          <div class="cv-profile-copy">
+            <div class="cv-eyebrow mono" data-i18n="cv.eyebrow">Dossier — Curriculum Vitae</div>
+            <h2 class="cv-title" id="cvTitle" data-cv-split>Kain Mckancy <span class="it">La Reine.</span></h2>
+            <p class="cv-lede" data-cv-fade data-i18n="cv.lede">Creative developer from Almere, working out of Amsterdam. Four years of school and studio work behind me — from media design at Arte College to the full software track at Bit Academy — and a year shipping production front-end at Grippr. I build cinematic, motion-driven interfaces in React, TypeScript and GSAP.</p>
+
+            <ul class="cv-facts mono">
+              <li data-cv-fact>
+                <span class="cf-k" data-i18n="cv.fact.email">Email</span>
+                <a class="cf-v" href="mailto:kkain25@gmail.com">kkain25@gmail.com</a>
+              </li>
+              <li data-cv-fact>
+                <span class="cf-k" data-i18n="cv.fact.phone">Phone</span>
+                <a class="cf-v" href="tel:+31616336034">+31 6 16 33 60 34</a>
+              </li>
+              <li data-cv-fact>
+                <span class="cf-k" data-i18n="cv.fact.based">Based</span>
+                <span class="cf-v">Almere · Amsterdam, NL</span>
+              </li>
+              <li data-cv-fact>
+                <span class="cf-k" data-i18n="cv.fact.born">Born</span>
+                <span class="cf-v" data-i18n="cv.fact.born.v">25 February 2004</span>
+              </li>
+              <li data-cv-fact>
+                <span class="cf-k" data-i18n="cv.fact.site">Site</span>
+                <a class="cf-v" href="https://kainmckancylareine.github.io/Mckancy.mc/">kainmckancylareine.github.io</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="cv-stats">
+          <div class="cv-stat" data-cv-count="5" data-cv-suffix="+">
+            <span class="cs-n">0</span>
+            <span class="cs-l mono" data-i18n="cv.stat.years">Years building</span>
+          </div>
+          <div class="cv-stat" data-cv-count="5" data-cv-suffix="">
+            <span class="cs-n">0</span>
+            <span class="cs-l mono" data-i18n="cv.stat.projects">Live client sites</span>
+          </div>
+          <div class="cv-stat" data-cv-count="5" data-cv-suffix="">
+            <span class="cs-n">0</span>
+            <span class="cs-l mono" data-i18n="cv.stat.certs">Certificates</span>
+          </div>
+          <div class="cv-stat" data-cv-count="11" data-cv-suffix="">
+            <span class="cs-n">0</span>
+            <span class="cs-l mono" data-i18n="cv.stat.stack">Stack tools</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- 02 · PATH ---------- -->
+      <section class="cv-sec" id="cvSecPath" data-cv-num="02">
+        <h3 class="cv-sec-title" data-cv-split data-i18n="cv.path.title">Education <span class="it">&amp; experience.</span></h3>
+
+        <ol class="cv-timeline">
+          <li class="cv-tl" data-cv-item>
+            <span class="tl-node" aria-hidden="true"><i></i></span>
+            <span class="tl-date mono" data-cv-scramble>sep 2021 — sep 2025</span>
+            <div class="tl-body">
+              <span class="tl-tag mono" data-i18n="cv.tag.education">Education</span>
+              <h4 class="tl-role" data-i18n="cv.path.bit.role">Software Developer</h4>
+              <div class="tl-org">Bit Academy <span class="tl-loc">— Amsterdam</span></div>
+              <p class="tl-copy" data-i18n="cv.path.bit.copy">Full software track: PHP and databases first, then JavaScript, React and modern front-end architecture — every module graded on shipped, working projects rather than exams.</p>
+              <div class="tl-chips"><span>PHP</span><span>JavaScript</span><span>React</span><span>Databases</span></div>
+            </div>
+          </li>
+
+          <li class="cv-tl" data-cv-item>
+            <span class="tl-node" aria-hidden="true"><i></i></span>
+            <span class="tl-date mono" data-cv-scramble>nov 2023 — aug 2024</span>
+            <div class="tl-body">
+              <span class="tl-tag mono tl-tag-work" data-i18n="cv.tag.work">Experience</span>
+              <h4 class="tl-role" data-i18n="cv.path.grippr.role">Junior Software Engineer</h4>
+              <div class="tl-org">Grippr <span class="tl-loc">— Laren</span></div>
+              <p class="tl-copy" data-i18n="cv.path.grippr.copy">Front-end work in a small product team: building and maintaining React components, wiring them to the API, and taking designs from Figma to responsive production screens.</p>
+              <div class="tl-chips"><span>React</span><span>TypeScript</span><span>REST API</span><span>Scrum</span></div>
+            </div>
+          </li>
+
+          <li class="cv-tl" data-cv-item>
+            <span class="tl-node" aria-hidden="true"><i></i></span>
+            <span class="tl-date mono" data-cv-scramble>sep 2017 — aug 2021</span>
+            <div class="tl-body">
+              <span class="tl-tag mono" data-i18n="cv.tag.education">Education</span>
+              <h4 class="tl-role" data-i18n="cv.path.arte.role">Media Design</h4>
+              <div class="tl-org">Arte College <span class="tl-loc">— Almere Poort</span></div>
+              <p class="tl-copy" data-i18n="cv.path.arte.copy">Where the visual half comes from — composition, typography, color and motion, four years of it, long before the first line of code.</p>
+              <div class="tl-chips"><span data-i18n="cv.chip.artdirection">Art direction</span><span data-i18n="cv.chip.typography">Typography</span><span data-i18n="cv.chip.motion">Motion</span></div>
+            </div>
+          </li>
+
+          <li class="cv-tl-line" aria-hidden="true"><span id="cvTlFill"></span></li>
+        </ol>
+      </section>
+
+      <!-- ---------- 03 · SKILLS ---------- -->
+      <section class="cv-sec" id="cvSecSkills" data-cv-num="03">
+        <h3 class="cv-sec-title" data-cv-split data-i18n="cv.skills.title">The stack, <span class="it">measured.</span></h3>
+
+        <div class="cv-meters">
+          <div class="cv-meter" data-cv-level="100"><span class="cm-k">HTML5</span><span class="cm-v mono">0%</span><span class="cm-track"><i></i></span></div>
+          <div class="cv-meter" data-cv-level="100"><span class="cm-k">CSS3</span><span class="cm-v mono">0%</span><span class="cm-track"><i></i></span></div>
+          <div class="cv-meter" data-cv-level="80"><span class="cm-k">React</span><span class="cm-v mono">0%</span><span class="cm-track"><i></i></span></div>
+          <div class="cv-meter" data-cv-level="80"><span class="cm-k">TypeScript</span><span class="cm-v mono">0%</span><span class="cm-track"><i></i></span></div>
+          <div class="cv-meter" data-cv-level="80"><span class="cm-k">MQL5</span><span class="cm-v mono">0%</span><span class="cm-track"><i></i></span></div>
+          <div class="cv-meter" data-cv-level="60"><span class="cm-k">JavaScript</span><span class="cm-v mono">0%</span><span class="cm-track"><i></i></span></div>
+          <div class="cv-meter" data-cv-level="60"><span class="cm-k">Next.js</span><span class="cm-v mono">0%</span><span class="cm-track"><i></i></span></div>
+          <div class="cv-meter" data-cv-level="60"><span class="cm-k">Python</span><span class="cm-v mono">0%</span><span class="cm-track"><i></i></span></div>
+          <div class="cv-meter" data-cv-level="60"><span class="cm-k">Bootstrap</span><span class="cm-v mono">0%</span><span class="cm-track"><i></i></span></div>
+          <div class="cv-meter" data-cv-level="60"><span class="cm-k" data-i18n="cv.skill.responsive">Responsive design</span><span class="cm-v mono">0%</span><span class="cm-track"><i></i></span></div>
+          <div class="cv-meter" data-cv-level="40"><span class="cm-k">Scrum</span><span class="cm-v mono">0%</span><span class="cm-track"><i></i></span></div>
+        </div>
+      </section>
+
+      <!-- ---------- 04 · CERTIFICATES ---------- -->
+      <section class="cv-sec" id="cvSecCerts" data-cv-num="04">
+        <h3 class="cv-sec-title" data-cv-split data-i18n="cv.certs.title">Certificates <span class="it">earned.</span></h3>
+
+        <div class="cv-certs">
+          <article class="cv-cert" data-cv-cert>
+            <span class="cc-date mono" data-cv-scramble data-i18n="cv.cert.d1">mar 2023</span>
+            <h4 class="cc-name">Front-end Frameworks</h4>
+            <span class="cc-seal" aria-hidden="true"></span>
+          </article>
+          <article class="cv-cert" data-cv-cert>
+            <span class="cc-date mono" data-cv-scramble data-i18n="cv.cert.d2">sep 2022</span>
+            <h4 class="cc-name">JavaScript Pro</h4>
+            <span class="cc-seal" aria-hidden="true"></span>
+          </article>
+          <article class="cv-cert" data-cv-cert>
+            <span class="cc-date mono" data-cv-scramble data-i18n="cv.cert.d3">mar 2022</span>
+            <h4 class="cc-name">CSS Pro</h4>
+            <span class="cc-seal" aria-hidden="true"></span>
+          </article>
+          <article class="cv-cert" data-cv-cert>
+            <span class="cc-date mono" data-cv-scramble data-i18n="cv.cert.d4">feb 2022</span>
+            <h4 class="cc-name">HTML Pro</h4>
+            <span class="cc-seal" aria-hidden="true"></span>
+          </article>
+          <article class="cv-cert" data-cv-cert>
+            <span class="cc-date mono" data-cv-scramble data-i18n="cv.cert.d5">nov 2021</span>
+            <h4 class="cc-name">Database PDO</h4>
+            <span class="cc-seal" aria-hidden="true"></span>
+          </article>
+        </div>
+      </section>
+
+      <!-- ---------- 05 · LANGUAGES & INTERESTS ---------- -->
+      <section class="cv-sec" id="cvSecExtra" data-cv-num="05">
+        <h3 class="cv-sec-title" data-cv-split data-i18n="cv.extra.title">Languages <span class="it">&amp; interests.</span></h3>
+
+        <div class="cv-extra-grid">
+          <div class="cv-block" data-cv-item>
+            <div class="cb-k mono" data-i18n="cv.extra.languages">Languages</div>
+            <ul class="cb-list">
+              <li><span data-i18n="cv.lang.nl">Dutch</span><span class="cb-meta mono" data-i18n="cv.lang.nl.lvl">Native</span></li>
+              <li><span data-i18n="cv.lang.en">English</span><span class="cb-meta mono" data-i18n="cv.lang.en.lvl">Fluent</span></li>
+            </ul>
+          </div>
+          <div class="cv-block" data-cv-item>
+            <div class="cb-k mono" data-i18n="cv.extra.interests">Interests</div>
+            <ul class="cb-list">
+              <li><span data-i18n="cv.int.programming">Programming</span></li>
+              <li><span data-i18n="cv.int.webdesign">Web design</span></li>
+              <li><span data-i18n="cv.int.gaming">Gaming</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="cv-outro">
+          <p class="cv-outro-copy" data-cv-fade data-i18n="cv.outro">Want the paper version, or the whole story over a call?</p>
+          <div class="cv-outro-row">
+            <a class="cv-btn" id="cvDownload2" href="#" data-magnet>
+              <span data-i18n="cv.download">Download PDF</span>
+              <span aria-hidden="true">↓</span>
+            </a>
+            <button class="cv-btn cv-btn-ghost" type="button" id="cvToContact" data-magnet>
+              <span data-i18n="cv.outro.contact">Get in touch</span>
+              <span aria-hidden="true">↗</span>
+            </button>
+          </div>
+          <div class="cv-doc-meta mono" id="cvDocMeta" aria-live="polite"></div>
+          <div class="cv-end mono" data-i18n="cv.end">End of dossier — KMLR 2026</div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<a href="mailto:kkain25@gmail.com" class="km-fab" data-magnet data-i18n-attr="aria-label:fab.email" aria-label="Email me">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="m3 7 9 6 9-6"/></svg>
+</a>
+
+</body>
+</html>
